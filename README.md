@@ -14,7 +14,7 @@
 - [ ] Security is notified of all events within the airport.
 - [ ] All airport customers are billed through the airport financial department.
 
-Requirements for assignment:
+## Requirements for assignment:
 1. - [ ] ArchiMate model of the enterprise architecture. (http://pubs.opengroup.org/architecture/archimate-doc/ts_archimate/)
 2. - [ ] Context map.
 3. - [ ] Non-functional requirements.
@@ -23,9 +23,13 @@ Requirements for assignment:
 6. - [ ] Postman or Swagger scripts that trigger the various RESTful Web API’s to allow showing that functionality works. So, there’s no need to create a GUI in order to save you work.
 7. - [ ] Docker image of your application.
 8. - [ ] Motivation of each of the following concepts as applied to your case in a document. Use of these concepts is mandatory. Describe where it is applied and why it is applied:
-  - Microservices based on the principles of DDD
-  - Eventual consistency
-  - Event driven architecture based on messaging
-  - Command Query Responsibility Segregation (CQRS)
-  - Event Sourcing
-  - Enterprise Integration Patterns (at least one)
+ - Microservices based on the principles of DDD
+ - Eventual consistency
+ - Event driven architecture based on messaging
+ - Command Query Responsibility Segregation (CQRS)
+ - Event Sourcing
+ - Enterprise Integration Patterns (at least one)
+
+## Context Map:
+
+![Context Map](/images/diagrams/context_map.png)
