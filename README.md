@@ -23,13 +23,13 @@
 6. - [ ] Postman or Swagger scripts that trigger the various RESTful Web API’s to allow showing that functionality works. So, there’s no need to create a GUI in order to save you work.
 7. - [ ] Docker image of your application.
 8. - [ ] Motivation of each of the following concepts as applied to your case in a document. Use of these concepts is mandatory. Describe where it is applied and why it is applied:
- - Microservices based on the principles of DDD
- - Eventual consistency
- - Event driven architecture based on messaging
- - Command Query Responsibility Segregation (CQRS)
- - Event Sourcing
- - Enterprise Integration Patterns (at least one)
+    - Microservices based on the principles of DDD
+    - Eventual consistency
+    - Event driven architecture based on messaging
+    - Command Query Responsibility Segregation (CQRS)
+    - Event Sourcing
+    - Enterprise Integration Patterns (at least one)
 
 ## Context Map:
 
-![Context Map](/images/diagrams/context_map.png)
+![Context Map](/doc/images/diagrams/context_map.png)
