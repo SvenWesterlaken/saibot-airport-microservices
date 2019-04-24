@@ -32,4 +32,4 @@
 
 ## Context Map:
 
-![Context Map](/doc/images/diagrams/context_map.png)
+![Context Map](/docs/images/diagrams/context_map.png)
