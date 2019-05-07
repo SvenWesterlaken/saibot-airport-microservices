@@ -21,3 +21,8 @@ services:
       - ./flight_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
+    ports:
+      - '5001:5000'
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
