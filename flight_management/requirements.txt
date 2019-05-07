@@ -2,3 +2,4 @@ flask
 numpy
 pika
 redis
+werkzeug==0.14.1
