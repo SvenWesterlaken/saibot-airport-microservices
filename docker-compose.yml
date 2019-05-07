@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+
+  # Main RabbitMQ container
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+  flight_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: svenwstrl/saibot_flight_management
+    # Directory where the Dockerfile is located
+    build: ./flight_management
+    # Link local dir to dir in container
+    # Local: /flight_management
+    # Container: /usr/scr/app
+    volumes:
+      - ./flight_management:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
