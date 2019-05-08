@@ -1,0 +1,19 @@
+{
+  "name": "airside_management",
+  "version": "1.0.0",
+  "description": "Airside Management microservice for Saibot International Airport",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SvenWesterlaken/saibot-airport-microservices.git"
+  },
+  "author": "Maikel Jacobs, Thimo Koolen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SvenWesterlaken/saibot-airport-microservices/issues"
+  },
+  "homepage": "https://github.com/SvenWesterlaken/saibot-airport-microservices#readme"
+}
