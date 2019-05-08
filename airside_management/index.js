@@ -13,7 +13,9 @@ app.use(parser.urlencoded({extended:true}));
 
 app.set('port', (process.env.API_PORT || 8181));
 
-app.use('/api/v1', require('./routes/v1/api.v1'));
+app.use('/api/v1/fuel', require('./routes/v1/fuel.v1'));
+app.use('/api/v1/runway', require('./routes/v1/runway.v1'));
+app.use('/api/v1/taxiway', require('./routes/v1/taxiway.v1'));
 
 app.use((err, req, res, next) => {
 	let error = {
