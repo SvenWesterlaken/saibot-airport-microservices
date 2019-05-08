@@ -37,18 +37,40 @@ router.post('/', (req, res) => {
 			width: body.width
 		},
 		old_data: {}
-	}
+	};
 	
 	//Send message
 	amqpManager.connect()
 		.then((channel) => {
 			amqpManager.sendMessageToQueue(channel, 'airside-runway', JSON.stringify(payload));
 			res.status(201).json(payload);
-		})
+		});
 });
 
-router.delete('/{id}', (req, res) => {
+router.delete('/:id', (req, res) => {
+	let runwayId = req.params.id;
 	
+	//TODO Get runway data from database, and remove
+	
+	let payload = {
+		id: uuid(),
+		message: 'Runway has been delete successfully.',
+		from: 'airside_management',
+		'type': 'DELETE',
+		data: {},
+		old_data: {
+			side1: '36L',
+			side2: '18R',
+			length: 3800,
+			width: 60
+		}
+	};
+	
+	amqpManager.connect()
+		.then((channel) => {
+			amqpManager.sendMessageToQueue(channel, 'airside-runway', JSON.stringify(payload));
+			res.status(200).json(payload);
+		});
 });
 
 module.exports = router;
