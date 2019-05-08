@@ -1,8 +1,7 @@
 from pony.orm import *
-from .base import db
+from .base import db, ParsingMixin
 
-class Gate(db.Entity):
+class Gate(db.Entity, ParsingMixin):
     terminal = Required(str)
     nr = Required(int)
-    arrival_flights = Set('Flight', reverse='arrival_gate')
-    leaving_flights = Set('Flight', reverse='leave_gate')
+    flights = Set('Flight')

@@ -32,9 +32,7 @@ def create():
 def update(id):
     gate_update = json.loads(request.data.decode('UTF-8'))
     gate = Gate[id]
-
-    for key, value in gate_update.items():
-        setattr(gate, key, value)
+    gate.update_props(gate_update)
 
     return json.dumps(gate.to_dict())
 
