@@ -1,11 +1,11 @@
 const fuelWorker = require('./workers/worker');
-const fuelWorkerCallback = require('./workers/fuel.worker');
+const fuelWorkerCallback = require('./workers/airside-fuel.worker');
 
 const runwayWorker = require('./workers/worker');
-const runwayWorkerCallback = require('./workers/runway.worker');
+const runwayWorkerCallback = require('./workers/airside-runway.worker');
 
 const taxiwayWorker = require('./workers/worker');
-const taxiwayWorkerCallback = require('./workers/taxiway.worker');
+const taxiwayWorkerCallback = require('./workers/airside-taxiway.worker');
 
 module.exports.init = () => {
 	fuelWorkerCallback.init('airside-fuel');
