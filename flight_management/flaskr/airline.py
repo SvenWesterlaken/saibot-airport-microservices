@@ -1,6 +1,6 @@
 import functools, json
 from flask import Blueprint, request
-from models import db, Airline
+from models import Airline
 from pony.orm import *
 
 bp = Blueprint('airline', __name__, url_prefix='/airline')
@@ -25,19 +25,17 @@ def create():
     new_airline = Airline(**airline)
 
     #TODO: Error Handling
-    return 'Succeeded'
+    return json.dumps(new_airline.to_dict())
 
 @bp.route('/<id>', methods=['PUT'])
 @db_session
 def update(id):
     airline_update = json.loads(request.data.decode('UTF-8'))
     airline = Airline[id]
+    airline.update_props(airline_update)
 
-    for key,value in airline_update.items():
-        setattr(airline,key,value)
-
-    #TODO: Error Handling
-    return 'Succeeded'
+    
+    return json.dumps(airline.to_dict())
 
 @bp.route('/<id>', methods=['DELETE'])
 @db_session

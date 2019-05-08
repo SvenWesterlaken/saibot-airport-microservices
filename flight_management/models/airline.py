@@ -1,6 +1,6 @@
 from pony.orm import *
-from .base import db
+from .base import db, ParsingMixin
 
-class Airline(db.Entity):
+class Airline(db.Entity, ParsingMixin):
     name = Required(str)
     flights = Set('Flight')
