@@ -8,9 +8,10 @@ class Flight(db.Entity, ParsingMixin):
     type = Required(bool)
     location = Required(str)
     airline = Required('Airline')
+    airplane = Required('Airplane')
     time = Required(datetime)
     status = Required(str, default='scheduled')
-    gate = Required('Gate')
+    gate = Optional('Gate')
     updated_at = Required(datetime, default=arrow.now().datetime)
     created_at = Required(datetime, default=arrow.now().datetime)
 

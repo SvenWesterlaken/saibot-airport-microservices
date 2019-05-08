@@ -2,7 +2,7 @@
 
 import os
 from flask import Flask
-from . import airline, gate, flight
+from . import airline, gate, flight, airplane
 
 def create_app(test_config=None):
     # create and configure the app
@@ -33,5 +33,6 @@ def create_app(test_config=None):
     app.register_blueprint(airline.bp)
     app.register_blueprint(gate.bp)
     app.register_blueprint(flight.bp)
+    app.register_blueprint(airplane.bp)
 
     return app
