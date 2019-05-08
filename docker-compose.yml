@@ -36,6 +36,9 @@ services:
     environment:
       FLASK_APP: flaskr
       FLASK_ENV: development
+      MYSQL_HOST: mysql_flight_management
+      MYSQL_PASS: saibot
+      MYSQL_DB: saibot_flight_management
 
   mysql_flight_management:
     image: mysql:5.7
