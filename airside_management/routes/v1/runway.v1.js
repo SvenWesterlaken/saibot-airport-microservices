@@ -65,6 +65,37 @@ router.post('/', (req, res) => {
 		});
 });
 
+router.patch('/:id', (req, res) => {
+	let runwayId = req.params.id;
+	
+	//TODO Get runway data from database, and patch
+	
+	let payload = {
+		id: uuid(),
+		message: 'Runway has been patched successfully.',
+		from: 'airside_management',
+		type: 'PATCH',
+		data: {
+			side1: '36L',
+			side2: '18R',
+			length: 3900,
+			width: 65
+		},
+		old_data: {
+			side1: '36L',
+			side2: '18R',
+			length: 3800,
+			width: 60
+		}
+	};
+	
+	amqpManager.connect()
+		.then((channel) => {
+			amqpManager.sendMessageToQueue(channel, 'airside-runway', JSON.stringify(payload));
+			res.status(200).json(payload);
+		})
+});
+
 router.delete('/:id', (req, res) => {
 	let runwayId = req.params.id;
 	
@@ -74,7 +105,7 @@ router.delete('/:id', (req, res) => {
 		id: uuid(),
 		message: 'Runway has been delete successfully.',
 		from: 'airside_management',
-		'type': 'DELETE',
+		type: 'DELETE',
 		data: {},
 		old_data: {
 			side1: '36L',
