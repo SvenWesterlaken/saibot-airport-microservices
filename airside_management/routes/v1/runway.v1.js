@@ -4,14 +4,32 @@ const amqpManager = require('../../events/amqp.manager');
 const uuid = require('uuid/v4');
 
 router.get('/', (req, res) => {
-	amqpManager.connect()
-		.then((channel) => {
-			amqpManager.sendMessageToQueue(channel, 'airside-runway', JSON.stringify({
-				message: 'Hoi',
-				code: 200
-			}))
-		});
-	res.status(200).json({message: 'Welcome to Runway V1 API'});
+	let payload = [
+		{
+			side1: '36L',
+			side2: '18R',
+			length: 3800,
+			width: 60
+		},
+		{
+			side1: '09',
+			side2: '27',
+			length: 3453,
+			width: 45
+		}
+	];
+	res.status(200).json({runways: payload});
+});
+
+router.get('/:id', (req, res) => {
+	let payload = {
+		side1: '36L',
+		side2: '18R',
+		length: 3800,
+		width: 60
+	};
+	
+	res.status(200).json({runway: payload});
 });
 
 router.post('/', (req, res) => {
