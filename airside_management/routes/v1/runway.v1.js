@@ -107,7 +107,7 @@ router.delete('/:id', (req, res) => {
 	
 	let payload = {
 		id: uuid(),
-		message: 'Runway has been delete successfully.',
+		message: 'Runway has been deleted successfully.',
 		from: 'airside_management',
 		type: 'DELETE',
 		data: {},
