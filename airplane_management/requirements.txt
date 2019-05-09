@@ -9,6 +9,6 @@ jinja2
 markupsafe
 python-dotenv
 vc
-werkzeug
+werkzeug==0.14.1
 wheel
 wincertstore
