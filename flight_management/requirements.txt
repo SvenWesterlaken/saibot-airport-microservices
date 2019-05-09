@@ -7,4 +7,5 @@ arrow
 pony
 colorama
 pymysql
+retrying
 werkzeug==0.14.1
