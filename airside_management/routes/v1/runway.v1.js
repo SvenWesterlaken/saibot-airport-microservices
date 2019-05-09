@@ -4,6 +4,7 @@ const amqpManager = require('../../events/amqp.manager');
 const uuid = require('uuid/v4');
 
 router.get('/', (req, res) => {
+	//TODO Get all runways from database
 	let payload = [
 		{
 			side1: '36L',
@@ -22,6 +23,9 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
+	let id = req.params.id;
+	
+	//TODO Get runway from database
 	let payload = {
 		side1: '36L',
 		side2: '18R',
@@ -29,7 +33,7 @@ router.get('/:id', (req, res) => {
 		width: 60
 	};
 	
-	res.status(200).json({runway: payload});
+	res.status(200).json(payload);
 });
 
 router.post('/', (req, res) => {
