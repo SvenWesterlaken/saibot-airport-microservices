@@ -9,6 +9,14 @@ services:
       - '5672:5672'
       - '15672:15672'
 
+  #  PHPmyadmin container to connect to all mysql databases
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+    ports:
+    - '8080:80'
+
   flight_management:
     # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
     image: svenwstrl/saibot_flight_management
@@ -21,3 +29,38 @@ services:
       - ./flight_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
+
+  airplane_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: twanvm92/saibot_airplane_management
+    # Directory where the Dockerfile is located
+    build: ./airplane_management
+    # Link local dir to dir in container
+    # Local:      /flight_management
+    # Container:  /usr/scr/app
+    volumes:
+    - ./airplane_management:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
+    # Connect inner port 5000 to outer port 5002 (container can be accessed by localhost:5002 this way)
+    ports:
+    - '5002:5000'
+    # Set environment variables
+    environment:
+      FLASK_APP: main.py
+      FLASK_ENV: development
+      MYSQL_HOST: mysql_airplane_management
+      MYSQL_PASS: saibot
+      MYSQL_DB: saibot_airplane_management
+
+  mysql_flight_management:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: saibot
+    volumes:
+    - airplane_mysql:/var/lib/mysql
+    ports:
+    - "3306:3306"
+
+volumes:
+  airplane_mysql:
