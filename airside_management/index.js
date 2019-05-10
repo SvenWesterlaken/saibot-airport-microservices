@@ -1,6 +1,7 @@
 const express = require('express');
 const parser = require('body-parser');
 const workerManager = require('./events/worker.manager');
+const mongodb = require('./config/mongodb');
 
 require('dotenv').config();
 
@@ -12,6 +13,10 @@ app.use(parser.json());
 app.use(parser.urlencoded({extended:true}));
 
 app.set('port', (process.env.API_PORT || 8181));
+
+mongodb.connect()
+	.once('open', () => console.log('Connected to Mongo'))
+	.on('error', (error) => console.warn('Warning', error.toString()));
 
 app.use('/api/v1/fuel', require('./routes/v1/fuel.v1'));
 app.use('/api/v1/runway', require('./routes/v1/runway.v1'));
