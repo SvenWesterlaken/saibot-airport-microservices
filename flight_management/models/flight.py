@@ -13,6 +13,7 @@ class Flight(db.Entity, ParsingMixin):
     time = Required(datetime, volatile=True)
     end_time = Optional(datetime, volatile=True)
     status = Required(str, default='scheduled')
+    check_in_counter = Optional('CheckInCounter')
     gate = Optional('Gate')
     updated_at = Required(datetime, default=arrow.now().datetime, volatile=True)
     created_at = Required(datetime, default=arrow.now().datetime, volatile=True)
