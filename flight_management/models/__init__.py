@@ -5,6 +5,7 @@ from .base import db
 from .flight import Flight
 from .airline import Airline
 from .airplane import Airplane
+from .check_in_counter import CheckInCounter
 from .gate import Gate
 
 @db_session
@@ -12,6 +13,7 @@ def populate_db():
 
     airlines = ['KLM', 'InterJet', 'Thomas Cook Airlines', 'Transavia Airlines', 'easyJet', 'Ryanair']
     airplanes = range(10)
+    check_in_counters = range(10)
     gate_terminals = string.ascii_uppercase[:2]
     gate_amount = range(10)
 
@@ -22,6 +24,10 @@ def populate_db():
     if not Airplane.select().exists():
         for i in airplanes:
             Airplane(max_capacity=randint(88, 268))
+
+    if not CheckInCounter.select().exists():
+        for c in check_in_counters:
+            CheckInCounter(nr=c+1)
 
     if not Gate.select().exists():
         for t in gate_terminals:
@@ -42,6 +48,7 @@ def populate_db():
                 'airline': randint(1, len(airlines)),
                 'airplane': randint(1, len(airplanes)),
                 'time': now.shift(days=+i).replace(hour=randint(1,22), minute=randint(0,59), second=0).datetime,
+                'check_in_counter': randint(1, len(check_in_counters)),
                 'gate': randint(1, len(gate_terminals) * len(gate_amount))
             }
 

@@ -11,6 +11,7 @@ class Flight(db.Entity, ParsingMixin):
     airplane = Required('Airplane')
     time = Required(datetime)
     status = Required(str, default='scheduled')
+    check_in_counter = Optional('CheckInCounter')
     gate = Optional('Gate')
     updated_at = Required(datetime, default=arrow.now().datetime)
     created_at = Required(datetime, default=arrow.now().datetime)
@@ -24,7 +25,5 @@ class Flight(db.Entity, ParsingMixin):
         for k,v in dict.items():
             if isinstance(v, datetime):
                 dict[k] = arrow.get(v).format('YYYY-MM-DD HH:mm:ss')
-
-        print(dict)
 
         return dict

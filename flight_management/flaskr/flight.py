@@ -1,6 +1,6 @@
 import functools, json, arrow
 from flask import Blueprint, request
-from models import Flight
+from models import CheckInCounter, Flight
 from pony.orm import *
 
 bp = Blueprint('flight', __name__, url_prefix='/flight')
@@ -46,3 +46,23 @@ def delete(id):
 
     #TODO: Error Handling
     return 'Succeeded'
+
+@bp.route('/<id>/setcounter', methods=['PUT'])
+@db_session
+def set_counter(id):
+    flight_data = json.loads(request.data.decode('UTF-8'))
+    counter_id = flight_data['check_in_counter']
+
+    try:
+        int(counter_id)
+    except ValueError:
+        return 'Counter id must be an integer', 400
+
+    if CheckInCounter.get(id=counter_id) is None:
+        return 'Invalid counter id', 400
+
+    flight = Flight[id]
+
+    setattr(flight, 'check_in_counter', counter_id)
+
+    return json.dumps(flight.to_dict())
