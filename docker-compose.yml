@@ -30,7 +30,7 @@ services:
     depends_on:
       - rabbitmq
     ports:
-      - "8181"
+      - "5003:8181"
     # Link local dir to dir in container
     # Local: /flight_management
     # Container: /usr/scr/app
