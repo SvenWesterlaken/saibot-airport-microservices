@@ -1,7 +1,8 @@
-
+from app import create_app
 from flask import Flask
+from app.rabbitmq import rabbitmq
 
-app = Flask(__name__)
+app = create_app()
 
 
 @app.route("/")
@@ -10,4 +11,5 @@ def hello():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug="true")
+    rabbitmq.connect()
+    app.run(host="0.0.0.0", debug="true", use_reloader=False)
