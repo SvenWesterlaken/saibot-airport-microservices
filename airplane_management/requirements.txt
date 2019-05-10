@@ -12,3 +12,6 @@ vc
 werkzeug==0.14.1
 wheel
 wincertstore
+pony
+retrying
+pika

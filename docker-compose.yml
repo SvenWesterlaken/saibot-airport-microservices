@@ -53,7 +53,7 @@ services:
       MYSQL_PASS: saibot
       MYSQL_DB: saibot_airplane_management
 
-  mysql_flight_management:
+  mysql_airplane_management:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: saibot
