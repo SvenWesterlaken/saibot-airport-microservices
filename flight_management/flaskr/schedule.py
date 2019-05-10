@@ -45,9 +45,6 @@ def requestFreeGate():
 
     if overlapping_count < gates_count:
         new_flight = Flight(**flight)
-        commit()
-
-        print(new_flight.start_time)
 
         return json.dumps(new_flight.to_dict())
     else:
