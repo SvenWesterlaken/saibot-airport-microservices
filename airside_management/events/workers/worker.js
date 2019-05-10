@@ -1,11 +1,12 @@
 const amqpManager = require('../amqp.manager');
 
 module.exports.init = function(queueName, callbackEvent) {
-	amqpManager.connect()
+	return amqpManager.connect()
 		.then((channel) => {
-			amqpManager.consumeFromQueue(channel, queueName, callbackEvent);
-		})
-		.catch((error) => {
-			console.log(error);
+			if (channel == undefined) {
+				throw "Channel not found!"
+			} else {
+				amqpManager.consumeFromQueue(channel, queueName, callbackEvent);
+			}
 		});
 };

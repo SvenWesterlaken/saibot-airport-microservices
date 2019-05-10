@@ -4,6 +4,7 @@
   "description": "Airside Management microservice for Saibot International Airport",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

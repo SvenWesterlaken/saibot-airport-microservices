@@ -5,6 +5,7 @@ services:
   # Main RabbitMQ container
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: saibot_rabbitmq
     ports:
       - '5672:5672'
       - '15672:15672'
@@ -19,5 +20,21 @@ services:
     # Container: /usr/scr/app
     volumes:
       - ./flight_management:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
+  airside_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: thimok22/airside_management:latest
+    # Directory where the Dockerfile is located
+    build: ./airside_management
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8181"
+    # Link local dir to dir in container
+    # Local: /flight_management
+    # Container: /usr/scr/app
+    volumes:
+      - ./airside_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
