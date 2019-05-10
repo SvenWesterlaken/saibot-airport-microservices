@@ -6,6 +6,8 @@ module.exports = {
 			.then((conn) => {
 				if (conn != undefined) {
 					return conn.createChannel();
+				} else {
+					throw "Dit ging fout";
 				}
 			});
 	},

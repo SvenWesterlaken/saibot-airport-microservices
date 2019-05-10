@@ -7,6 +7,8 @@ const runwayWorkerCallback = require('./workers/airside-runway.worker');
 const taxiwayWorker = require('./workers/worker');
 const taxiwayWorkerCallback = require('./workers/airside-taxiway.worker');
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 module.exports.init = () => {
 	fuelWorkerCallback.init('airside-fuel');
 	runwayWorkerCallback.init('airside-runway');
@@ -26,6 +28,11 @@ function fuelWorkerInit() {
 		.catch((error) => {
 			console.log('Worker Fuel error.');
 			console.log(error);
+			
+			delay(10000)
+				.then(() => {
+					fuelWorkerInit();
+				});
 		});
 }
 
@@ -37,6 +44,11 @@ function runwayWorkerInit() {
 		.catch((error) => {
 			console.log('Worker Runway error.');
 			console.log(error);
+			
+			delay(10000)
+				.then(() => {
+					runwayWorkerInit();
+				});
 		});
 }
 
@@ -48,24 +60,10 @@ function taxiwayWorkerInit() {
 		.catch((error) => {
 			console.log('Worker Taxiway error.');
 			console.log(error);
+			
+			delay(5000)
+				.then(() => {
+					taxiwayWorkerInit();
+				});
 		});
-}
-
-function retry(fn, retriesLeft = 5, interval = 10) {
-	return new Promise((resolve, reject) => {
-		fn()
-			.then(resolve)
-			.catch((error) => {
-				setTimeout(() => {
-					if (retriesLeft === 1) {
-						console.log('NO RETRIES LEFT');
-						reject(error);
-						return;
-					}
-					
-					// Passing on "reject" is the important part
-					retry(fn, interval, retriesLeft - 1).then(resolve, reject);
-				}, interval);
-			});
-	});
 }
