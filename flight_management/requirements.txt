@@ -8,4 +8,5 @@ pony
 colorama
 pymysql
 retrying
+mongoengine
 werkzeug==0.14.1
