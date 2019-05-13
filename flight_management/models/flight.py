@@ -21,7 +21,7 @@ class Flight(db.Entity, ParsingMixin):
 
     def cancel(self):
         self.status = 'canceled'
-        deleted_at = arrow.now().datetime
+        self.deleted_at = arrow.now().datetime
 
     def set_before_and_after_time(self):
         time = arrow.get(self.time)

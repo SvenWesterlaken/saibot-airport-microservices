@@ -37,16 +37,6 @@ def update(id):
 
     return json.dumps(flight.to_dict())
 
-@bp.route('/<id>', methods=['DELETE'])
-@db_session
-def delete(id):
-    flight = Flight[id]
-
-    flight.delete()
-
-    #TODO: Error Handling
-    return 'Succeeded'
-
 @bp.route('/<id>/set_cg', methods=['PUT'])
 @db_session
 def set_counter_and_gate(id):
@@ -72,5 +62,13 @@ def set_counter_and_gate(id):
 
     flight = Flight[id]
     flight.update_props({'check_in_counter': counter_id, 'gate': gate_id})
+
+    return json.dumps(flight.to_dict())
+
+@bp.route('/<id>/cancel', methods=['POST'])
+@db_session
+def cancel_flight(id):
+    flight = Flight[id]
+    flight.cancel()
 
     return json.dumps(flight.to_dict())
