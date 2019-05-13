@@ -4,4 +4,4 @@ from .base import db, ParsingMixin
 
 class Airline(db.Entity, ParsingMixin):
     name = Required(str)
-    airplanes = Set('Airplane')
+    airplanes = Set('Airplane', cascade_delete=False)
