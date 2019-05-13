@@ -16,3 +16,4 @@ pony
 retrying
 pika
 pymysql
+flask_restplus
