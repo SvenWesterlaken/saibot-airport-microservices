@@ -5,17 +5,21 @@ from .base import db
 from .flight import Flight
 from .airline import Airline
 from .airplane import Airplane
+from .cargo import Cargo
 from .check_in_counter import CheckInCounter
 from .gate import Gate
+from .passenger import Passenger
 
 @db_session
 def populate_db():
 
     airlines = ['KLM', 'InterJet', 'Thomas Cook Airlines', 'Transavia Airlines', 'easyJet', 'Ryanair']
     airplanes = range(10)
+    cargo = range(10)
     check_in_counters = range(10)
     gate_terminals = string.ascii_uppercase[:2]
     gate_amount = range(10)
+    passengers = ['Henderson', 'Brewster', 'Wilson']
 
     if not Airline.select().exists():
         for a in airlines:
@@ -24,6 +28,10 @@ def populate_db():
     if not Airplane.select().exists():
         for i in airplanes:
             Airplane(max_capacity=randint(88, 268))
+
+    if not Cargo.select().exists():
+        for c in cargo:
+            Cargo(weight=randint(0, 10000))
 
     if not CheckInCounter.select().exists():
         for c in check_in_counters:
@@ -53,3 +61,7 @@ def populate_db():
             }
 
             Flight(**flight_props)
+
+    if not Passenger.select().exists():
+        for p in passengers:
+            Passenger(last_name=p)
