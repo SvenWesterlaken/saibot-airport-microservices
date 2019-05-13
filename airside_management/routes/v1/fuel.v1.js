@@ -98,7 +98,8 @@ router.patch('/:id', (req, res) => {
 						});
 				})
 				.catch((error) => res.status(400).json(error));
-		});
+		})
+		.catch((error) => res.status(400).json(error));
 });
 
 router.delete('/:id', (req, res) => {
