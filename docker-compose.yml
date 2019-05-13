@@ -9,15 +9,45 @@ services:
       - '5672:5672'
       - '15672:15672'
 
-  flight_management:
+  #  PHPmyadmin container to connect to all mysql databases
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+    ports:
+    - '8080:80'
+
+  gate_management:
     # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
-    image: svenwstrl/saibot_flight_management
+    image: svenwstrl/saibot_gate_management
     # Directory where the Dockerfile is located
-    build: ./flight_management
+    build: ./gate_management
     # Link local dir to dir in container
-    # Local: /flight_management
-    # Container: /usr/scr/app
+    # Local:      /gate_management
+    # Container:  /usr/scr/app
     volumes:
-      - ./flight_management:/usr/src/app
+      - ./gate_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
+    # Connect inner port 5000 to outer port 5004 (container can be accessed by localhost:5004 this way)
+    ports:
+      - '5004:5000'
+    # Set environment variables
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
+      MYSQL_HOST: mysql_gate_management
+      MYSQL_PASS: saibot
+      MYSQL_DB: saibot_gate_management
+
+  mysql_gate_management:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: saibot
+    volumes:
+      - gate_mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  gate_mysql:
