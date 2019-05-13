@@ -1,6 +1,6 @@
 import functools, json, arrow
 from flask import Blueprint, request
-from models import CheckInCounter, Flight
+from models import CheckInCounter, Flight, Gate
 from pony.orm import *
 
 bp = Blueprint('flight', __name__, url_prefix='/flight')
@@ -47,22 +47,30 @@ def delete(id):
     #TODO: Error Handling
     return 'Succeeded'
 
-@bp.route('/<id>/setcounter', methods=['PUT'])
+@bp.route('/<id>/set_cg', methods=['PUT'])
 @db_session
-def set_counter(id):
-    flight_data = json.loads(request.data.decode('UTF-8'))
-    counter_id = flight_data['check_in_counter']
+def set_counter_and_gate(id):
+    data = json.loads(request.data.decode('UTF-8'))
+    counter_id = data['check_in_counter']
+    gate_id = data['gate']
 
     try:
-        int(counter_id)
+        counter_id = int(counter_id)
     except ValueError:
-        return 'Counter id must be an integer', 400
+        return 'Counter ID must be an integer', 400
 
-    if CheckInCounter.get(id=counter_id) is None:
-        return 'Invalid counter id', 400
+    try:
+        gate_id = int(gate_id)
+    except ValueError:
+        return 'Counter ID must be an integer', 400
+
+    if CheckInCounter[counter_id] is None:
+        return 'Invalid counter ID', 400
+
+    if Gate[gate_id] is None:
+        return 'Invalid gate ID', 400
 
     flight = Flight[id]
-
-    setattr(flight, 'check_in_counter', counter_id)
+    flight.update_props({'check_in_counter': counter_id, 'gate': gate_id})
 
     return json.dumps(flight.to_dict())

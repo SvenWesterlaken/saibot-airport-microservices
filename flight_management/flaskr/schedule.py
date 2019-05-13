@@ -48,4 +48,4 @@ def requestFreeGate():
 
         return json.dumps(new_flight.to_dict())
     else:
-        return 'Sorry no free spots available'
+        return 'Sorry no free spots available around this time'
