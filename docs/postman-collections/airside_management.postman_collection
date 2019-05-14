@@ -1,0 +1,218 @@
+{
+	"info": {
+		"_postman_id": "0f462a9a-8005-4f37-9c8a-e0b1468a39ec",
+		"name": "Saibot Intl. Airport Airside Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Runway",
+			"item": []
+		},
+		{
+			"name": "Taxiway",
+			"item": [
+				{
+					"name": "GET all taxiways",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"identifier\": \"A\",\n\t\"from_point\": \"A3\",\n\t\"to_point\": \"A4\"\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET specific taxiway",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"identifier\": \"A\",\n\t\"from_point\": \"A3\",\n\t\"to_point\": \"A4\"\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/{{taxiway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								"{{taxiway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH specific taxiway",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"identifier\": \"A\",\n\t\"from_point\": \"A3\",\n\t\"to_point\": \"A4\"\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/{{taxiway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								"{{taxiway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE specific taxiway",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/{{taxiway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								"{{taxiway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST new taxiway",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"identifier\": \"A\",\n\t\"from_point\": \"A3\",\n\t\"to_point\": \"A4\"\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fuel",
+			"item": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "20caee58-0f8c-471f-9620-1ac8d609a315",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5ac8051e-4f41-49e4-a8b7-e5bac23dc1d5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "f565506f-44dc-4481-b00e-8602af151a1a",
+			"key": "taxiway_id",
+			"value": "12345",
+			"type": "string"
+		}
+	]
+}
