@@ -6,4 +6,4 @@ module.exports.init = (queueName) => {
 
 module.exports.messageReceivedEvent = (message) => {
 	console.log(' [x] Worker ' + queue + ' has received message: ' + message);
-}
+};
