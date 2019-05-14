@@ -151,3 +151,72 @@ _Deletes an existing taxiway in the system_
   }
 }
 ```
+
+- **POST /api/v1/fuel**
+
+_Adds a new fuel tank to the system_
+
+**Message sent in queue:** airside-fuel
+
+**Message content:**
+
+```json
+{
+  "id": "10ba038e-48da-487b-96e8-8d3b99b6d18a",
+  "message": "New fuel tank has been added successfully.",
+  "from": "airside_management",
+  "type": "CREATE",
+  "data": {
+    "fuel_level": 943839,
+    "fuel_capacity": 1000000
+  },
+  "old_data": {}
+}
+```
+
+- **PATCH /api/v1/fuel/[id]**
+
+_Updates an existing fuel tank in the system_
+
+**Message sent in queue:** airside-fuel
+
+**Message content:**
+
+```json
+{
+  "id": "10ba038e-48da-487b-96e8-8d3b99b6d18a",
+  "message": "Fuel tank has been patched successfully.",
+  "from": "airside_management",
+  "type": "PATCH",
+  "data": {
+    "fuel_level": 943839,
+    "fuel_capacity": 1000000
+  },
+  "old_data": {
+    "fuel_level": 943000,
+    "fuel_capacity": 1000000
+  }
+}
+```
+
+- **DELETE /api/v1/fuel/[id]**
+
+_Deletes an existing fuel tank in the system_
+
+**Message sent in queue:** airside-fuel
+
+**Message content:**
+
+```json
+{
+  "id": "10ba038e-48da-487b-96e8-8d3b99b6d18a",
+  "message": "Fuel tank has been deleted successfully.",
+  "from": "airside_management",
+  "type": "DELETE",
+  "data": {},
+  "old_data": {
+    "fuel_level": 943839,
+    "fuel_capacity": 1000000
+  }
+}
+```
