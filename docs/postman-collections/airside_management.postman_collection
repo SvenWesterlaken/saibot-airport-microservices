@@ -1,0 +1,537 @@
+{
+	"info": {
+		"_postman_id": "0f462a9a-8005-4f37-9c8a-e0b1468a39ec",
+		"name": "Saibot Intl. Airport Airside Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Runway",
+			"item": [
+				{
+					"name": "GET all runways",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET specific runway",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway/{{runway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway",
+								"{{runway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH specific runway",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"side1\": \"36L\",\n\t\"side2\": \"18R\",\n\t\"length\": 3800,\n\t\"width\": 60\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway/{{runway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway",
+								"{{runway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE specific runway",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway/{{runway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway",
+								"{{runway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST new runway",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"side1\": \"36L\",\n\t\"side2\": \"18R\",\n\t\"length\": 3800,\n\t\"width\": 60\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Taxiway",
+			"item": [
+				{
+					"name": "GET all taxiways",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"identifier\": \"A\",\n\t\"from_point\": \"A3\",\n\t\"to_point\": \"A4\"\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET specific taxiway",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"identifier\": \"A\",\n\t\"from_point\": \"A3\",\n\t\"to_point\": \"A4\"\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/{{taxiway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								"{{taxiway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH specific taxiway",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"identifier\": \"A\",\n\t\"from_point\": \"A3\",\n\t\"to_point\": \"A4\"\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/{{taxiway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								"{{taxiway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE specific taxiway",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/{{taxiway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								"{{taxiway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST new taxiway",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"identifier\": \"A\",\n\t\"from_point\": \"A3\",\n\t\"to_point\": \"A4\"\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/taxiway/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"taxiway",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fuel",
+			"item": [
+				{
+					"name": "GET all fuel tanks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET specific fuel tank",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/{{fueltank_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								"{{fueltank_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH specific fuel tank",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"fuel_level\": 943839,\n\t\"fuel_capacity\": 1000000\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/{{fueltank_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								"{{fueltank_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE specific runway",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/{{fueltank_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								"{{fueltank_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST new runway",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"fuel_level\": 943839,\n\t\"fuel_capacity\": 1000000\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "20caee58-0f8c-471f-9620-1ac8d609a315",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5ac8051e-4f41-49e4-a8b7-e5bac23dc1d5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "dbf493fc-2558-4870-ad3d-bd1637f9681f",
+			"key": "taxiway_id",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"id": "bb50203b-e1f7-4489-ae9d-a4a12c3db6ef",
+			"key": "runway_id",
+			"value": "67890",
+			"type": "string"
+		},
+		{
+			"id": "0542fcbd-199f-4fd6-ba2d-6b18ed6bd746",
+			"key": "fueltank_id",
+			"value": "10293",
+			"type": "string"
+		}
+	]
+}
