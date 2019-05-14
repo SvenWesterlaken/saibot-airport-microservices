@@ -7,7 +7,153 @@
 	"item": [
 		{
 			"name": "Runway",
-			"item": []
+			"item": [
+				{
+					"name": "GET all runways",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET specific runway",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway/{{runway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway",
+								"{{runway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH specific runway",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"side1\": \"36L\",\n\t\"side2\": \"18R\",\n\t\"length\": 3800,\n\t\"width\": 60\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway/{{runway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway",
+								"{{runway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE specific runway",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway/{{runway_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway",
+								"{{runway_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST new runway",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"side1\": \"36L\",\n\t\"side2\": \"18R\",\n\t\"length\": 3800,\n\t\"width\": 60\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/runway/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"runway",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Taxiway",
@@ -182,7 +328,168 @@
 		},
 		{
 			"name": "Fuel",
-			"item": []
+			"item": [
+				{
+					"name": "GET all fuel tanks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET specific fuel tank",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/{{fueltank_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								"{{fueltank_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH specific fuel tank",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"fuel_level\": 943839,\n\t\"fuel_capacity\": 1000000\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/{{fueltank_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								"{{fueltank_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE specific runway",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/{{fueltank_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								"{{fueltank_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST new runway",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"fuel_level\": 943839,\n\t\"fuel_capacity\": 1000000\n}"
+						},
+						"url": {
+							"raw": "localhost:5003/api/v1/fuel/",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"api",
+								"v1",
+								"fuel",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -209,9 +516,21 @@
 	],
 	"variable": [
 		{
-			"id": "f565506f-44dc-4481-b00e-8602af151a1a",
+			"id": "dbf493fc-2558-4870-ad3d-bd1637f9681f",
 			"key": "taxiway_id",
 			"value": "12345",
+			"type": "string"
+		},
+		{
+			"id": "bb50203b-e1f7-4489-ae9d-a4a12c3db6ef",
+			"key": "runway_id",
+			"value": "67890",
+			"type": "string"
+		},
+		{
+			"id": "0542fcbd-199f-4fd6-ba2d-6b18ed6bd746",
+			"key": "fueltank_id",
+			"value": "10293",
 			"type": "string"
 		}
 	]
