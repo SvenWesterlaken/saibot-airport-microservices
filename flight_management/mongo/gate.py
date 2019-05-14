@@ -1,7 +1,6 @@
-# from pony.orm import *
-# from .base import db, ParsingMixin
-#
-# class Gate(db.Entity, ParsingMixin):
-#     terminal = Required(str)
-#     nr = Required(int)
-#     flights = Set('Flight')
+from mongoengine import *
+
+class Gate(EmbeddedDocument):
+    e_id = IntField(required=True)
+    terminal = StringField(max_length=1, required=True)
+    nr = IntField(required=True)

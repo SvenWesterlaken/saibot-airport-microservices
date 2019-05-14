@@ -1,6 +1,5 @@
-# from pony.orm import *
-# from .base import db, ParsingMixin
-#
-# class CheckInCounter(db.Entity, ParsingMixin):
-#     nr = Required(int)
-#     flights = Set('Flight')
+from mongoengine import *
+
+class CheckInCounter(EmbeddedDocument):
+    e_id = IntField(required=True)
+    nr = IntField(required=True)

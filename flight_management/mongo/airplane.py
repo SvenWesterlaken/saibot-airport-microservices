@@ -1,6 +1,6 @@
-# from pony.orm import *
-# from .base import db, ParsingMixin
-#
-# class Airplane(db.Entity, ParsingMixin):
-#     max_capacity = Required(int)
-#     flights = Set('Flight')
+from mongoengine import *
+
+class Airplane(EmbeddedDocument):
+    e_id = IntField(required=True)
+    max_capacity = IntField(required=True)
+    airline = StringField(required=True)
