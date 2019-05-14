@@ -2,7 +2,7 @@
 
 import os
 from flask import Flask
-from . import schedule, flight
+from . import flight
 
 def create_app(test_config=None):
     # create and configure the app
@@ -31,6 +31,5 @@ def create_app(test_config=None):
         return 'Hello, World!'
 
     app.register_blueprint(flight.bp)
-    app.register_blueprint(schedule.bp)
 
     return app
