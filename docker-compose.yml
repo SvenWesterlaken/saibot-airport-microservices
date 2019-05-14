@@ -36,18 +36,16 @@ services:
     environment:
       FLASK_APP: flaskr
       FLASK_ENV: development
-      MYSQL_HOST: mysql_flight_management
-      MYSQL_PASS: saibot
-      MYSQL_DB: saibot_flight_management
+      MONGO_HOST: mongo_flight_management
+      MONGO_DB: saibot_flight_management
 
-  mysql_flight_management:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: saibot
+  mongo_flight_management:
+    image: mongo
+    restart: always
     volumes:
-      - flight_mysql:/var/lib/mysql
+      - saibot_flight_mongo:/data/db
     ports:
-      - "3306:3306"
+      - "27017:27017"
 
 volumes:
-  flight_mysql:
+  saibot_flight_mongo:
