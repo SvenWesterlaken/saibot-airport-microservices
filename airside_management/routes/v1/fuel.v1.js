@@ -40,7 +40,7 @@ router.post('/', (req, res) => {
 				old_data: {}
 			};
 			
-			amqpManager.connect()
+			amqpManager.connectRmq()
 				.then((channel) => {
 					amqpManager.sendMessageToQueue(channel, 'airside-fuel', JSON.stringify(payload));
 					res.status(201).json(payload);
@@ -85,7 +85,7 @@ router.patch('/:id', (req, res) => {
 						}
 					};
 					
-					amqpManager.connect()
+					amqpManager.connectRmq()
 						.then((channel) => {
 							amqpManager.sendMessageToQueue(channel, 'airside-fuel', JSON.stringify(payload));
 							res.status(201).json(payload);
@@ -116,7 +116,7 @@ router.delete('/:id', (req, res) => {
 				old_data: container
 			};
 			
-			amqpManager.connect()
+			amqpManager.connectRmq()
 				.then((channel) => {
 					amqpManager.sendMessageToQueue(channel, 'airside-fuel', JSON.stringify(payload));
 					res.status(201).json(payload);
