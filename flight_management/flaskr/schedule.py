@@ -1,12 +1,10 @@
-from flask import Blueprint, request, render_template
-from pony.orm import *
-from models import Flight, Gate
+from flask import Blueprint, request
+from mongo import Flight
 import json, arrow
 
 bp = Blueprint('schedule', __name__, url_prefix='/schedule')
 
 @bp.route('/<type>', methods=['GET'])
-@db_session
 def getSchedule(type):
     params = request.args
 
@@ -22,12 +20,11 @@ def getSchedule(type):
     if 'end_date' in params.keys():
         end_date = arrow.get(params['end_date'])
 
-    flights = [f.to_dict() for f in select(f for f in Flight if f.time >= start_date.datetime and f.time <= end_date.datetime and f.type == type)[:]]
+    flights = [f.to_parsable() for f in Flight.objects(time__gte=start_date.datetime, time__lte=end_date.datetime, type=type)]
 
     return json.dumps({'start': start_date.format('YYYY-MM-DD'), 'end': end_date.format('YYYY-MM-DD'), 'flights': flights})
 
 @bp.route('/request', methods=['POST'])
-@db_session
 def requestFreeGate():
     flight = json.loads(request.data.decode('UTF-8'))
 
@@ -40,12 +37,13 @@ def requestFreeGate():
     start_time = time.shift(hours=-1) if is_departing else time.shift(minutes=-15)
     end_time = time.shift(minutes=+15) if is_departing else time.shift(hours=+1)
 
-    overlapping_count = select(f for f in Flight if f.start_time <= end_time.datetime and f.end_time >= start_time.datetime).count()
-    gates_count = Gate.select().count()
+    overlapping_count = Flight.objects(start_time__lte=end_time.datetime, time__gte=start_time.datetime).count()
+    gates_count = 20 # needs to be coupled to a database value
 
     if overlapping_count < gates_count:
         new_flight = Flight(**flight)
+        new_flight.save()
 
-        return json.dumps(new_flight.to_dict())
+        return json.dumps(new_flight.to_parsable())
     else:
         return 'Sorry no free spots available around this time'
