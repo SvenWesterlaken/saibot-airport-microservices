@@ -1,16 +1,16 @@
 import arrow, mongoengine
 from retrying import retry
 from random import randint, choice
-from .airplane import Airplane
-from .check_in_counter import CheckInCounter
-from .gate import Gate
-from .baggage import Baggage
+from .airplane import *
+from .check_in_counter import *
+from .gate import *
+from .baggage import *
 # Needs to be import after baggage (embedded document)
-from .passenger import Passenger
+from .passenger import *
 # Needs to be last as embedded documents need to be imported first (registration of documents)
-from .flight import Flight, flight_schema
+from .flight import *
 
-schemas = [('Flight', flight_schema)]
+schemas = [('Flight', flight_schema), ('Gate', gate_schema), ('Baggage', baggage_schema), ('Passenger', passenger_schema), ('CheckInCounter', counter_schema), ('Airplane', airplane_schema)]
 
 def init(config, populate=True):
     connect_mongo(config)

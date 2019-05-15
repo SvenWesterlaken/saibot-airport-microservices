@@ -40,8 +40,30 @@ flight_schema = """
             description: End time when the gate needs to be free
         status:
             type: integer
+            default: 0
             description: 'Status of the flight.\n\n0 = Scheduled\n\n1 = Canceled\n\n2 = Arrived\n\n3 = Departed'
-
+        updated_at:
+            type: string
+            example: 2019-05-15 14:38:00
+            description: Datetime when this object was last updated
+        created_at:
+            type: string
+            example: 2019-05-15 14:38:00
+            description: Datetime when this object was created
+        deleted_at:
+            type: string
+            example: 2019-05-15 14:40:00
+            description: Datetime when this object was soft deleted (ie. flight canceled)
+        airplane:
+            $ref: '#/definitions/Airplane'
+        passengers:
+            type: array
+            items:
+                $ref: '#/definitions/Passenger'
+        check_in_counter:
+            $ref: '#/definitions/CheckInCounter'
+        gate:
+            $ref: '#/definitions/Gate'
 """
 
 class Flight(UpdateMixin, ParsableDocument):
