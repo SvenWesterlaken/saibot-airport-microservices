@@ -9,5 +9,6 @@ def getEnvVariable(name):
 
 mongo_settings = {
     'host': getEnvVariable('MONGO_HOST'),
-    'db': getEnvVariable('MONGO_DB')
+    'db': getEnvVariable('MONGO_DB'),
+    'serverSelectionTimeoutMS': 5
 }

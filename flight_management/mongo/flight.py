@@ -1,5 +1,7 @@
 from mongoengine import *
+from itertools import chain
 from .mixins import UpdateMixin, ParsableDocument
+import numpy as np
 import arrow
 
 STATUS_SCHEDULED = 0
@@ -24,6 +26,12 @@ class Flight(UpdateMixin, ParsableDocument):
     deleted_at = DateTimeField()
     meta = {'collection': 'flights'}
 
+    def to_parsable(self):
+        dict = super().to_parsable()
+        dict['total_weight'] = self.__weight_from_dict(dict)
+
+        return dict
+
     def clean(self):
         self.updated_at = arrow.now().datetime
         self.__set_before_and_after_time()
@@ -32,6 +40,12 @@ class Flight(UpdateMixin, ParsableDocument):
         self.status = STATUS_CANCELED
         self.deleted_at = arrow.now().datetime
         self.save()
+
+    def __weight_from_dict(self, item):
+        return int(np.sum(list(map(lambda b : b['weight'], chain.from_iterable([p['baggage'] for p in item['passengers']])))))
+
+    def total_weight(self):
+        return int(np.sum(list(map(lambda b : b.weight, chain.from_iterable([p.baggage for p in self.passengers])))))
 
     def update_time(self, time):
         self.time = time

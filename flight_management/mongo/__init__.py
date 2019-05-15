@@ -1,4 +1,5 @@
 import arrow, mongoengine
+from retrying import retry
 from random import randint, choice
 from .airplane import Airplane
 from .check_in_counter import CheckInCounter
@@ -11,14 +12,16 @@ from .flight import Flight
 
 def init(config, populate=True):
     connect_mongo(config)
+    print(' x', 'Connected to MongoDB')
 
     if not Flight.objects.count() > 0:
         populate_db()
 
+@retry(stop_max_attempt_number=3, wait_fixed=10000)
 def connect_mongo(config):
-    print(' x', 'Connecting to mongodb...')
-    mongoengine.connect(**config)
-    print(' x', 'Connected to mongodb')
+    print(' x', 'Connecting to MongoDB...')
+    db = mongoengine.connect(**config)
+    mongoengine.connection.get_connection().server_info()
 
 def populate_db():
 
