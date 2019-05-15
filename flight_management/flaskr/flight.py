@@ -4,7 +4,22 @@ from mongo import CheckInCounter, Flight, Gate, Passenger
 
 bp = Blueprint('flight', __name__, url_prefix='/flight')
 
-@bp.route('/<type>', methods=['GET'])
+@bp.route('/<id>', methods=['GET'])
+def get_flight(id):
+    flight = Flight.objects.get(id=id)
+
+    return json.dumps(flight.to_parsable())
+
+@bp.route('', methods=['GET'])
+def get_all():
+    flights = [f.to_parsable() for f in Flight.objects]
+    return json.dumps(flights)
+
+@bp.route('/count', methods=['GET'])
+def get_count():
+    return json.dumps({'count': Flight.objects.count()})
+
+@bp.route('/schedule/<type>', methods=['GET'])
 def getSchedule(type):
     params = request.args
 
@@ -64,5 +79,21 @@ def set_counter_and_gate(id):
 def cancel_flight(id):
     flight = Flight.objects.get(id=id)
     flight.cancel()
+
+    return json.dumps(flight.to_parsable())
+
+@bp.route('/<id>/add_passenger', methods=['POST'])
+def add_passenger(id):
+    flight = Flight.objects.get(id=id)
+
+    passengers = json.loads(request.data.decode('UTF-8'))
+
+    if isinstance(passengers, dict):
+        passengers = [passengers]
+
+    for p in passengers:
+        flight.passengers.append(Passenger(**p))
+
+    flight.save()
 
     return json.dumps(flight.to_parsable())
