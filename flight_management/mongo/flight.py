@@ -14,6 +14,7 @@ flight_schema = """
         _id:
             type: string
             format: uuid
+            example: 5cdc02bbe3dafee2a3538d8e
             description: ID of the flight
         nr:
             type: integer

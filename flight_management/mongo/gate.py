@@ -4,6 +4,7 @@ gate_schema = """
     properties:
         e_id:
             type: integer
+            example: 2
             description: External ID of the gate (from gate_management)
         terminal:
             type: string

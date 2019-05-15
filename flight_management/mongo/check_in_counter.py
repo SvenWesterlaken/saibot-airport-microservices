@@ -4,6 +4,7 @@ counter_schema = """
     properties:
         e_id:
             type: integer
+            example: 2
             description: External ID of the check-in counter (from check_in_counter_management)
         nr:
             type: integer
