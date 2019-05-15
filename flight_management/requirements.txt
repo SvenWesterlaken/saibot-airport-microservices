@@ -1,3 +1,4 @@
+pyyaml
 flask
 numpy
 pika
@@ -10,3 +11,5 @@ pymysql
 retrying
 mongoengine
 werkzeug==0.14.1
+flask-swagger
+flask-swagger-ui

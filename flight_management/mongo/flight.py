@@ -9,6 +9,41 @@ STATUS_CANCELED = 1
 STATUS_ARRIVED = 2
 STATUS_DEPARTED = 3
 
+flight_schema = """
+    properties:
+        _id:
+            type: string
+            format: uuid
+            description: ID of the flight
+        nr:
+            type: integer
+            description: Number of the flight
+            example: 102
+        type:
+            type: boolean
+            description: Whether the flight is departing or not
+        location:
+            type: string
+            example: 'Oakland, CA'
+            description: Location where the flight is coming from / going to
+        start_time:
+            type: string
+            example: 2019-05-15 10:58:00
+            description: Start time when the gate needs to be free
+        time:
+            type: string
+            example: 2019-05-15 11:13:00
+            description: Time of actual departure/arrival for the flight
+        end_time:
+            type: string
+            example: 2019-05-15 12:13:00
+            description: End time when the gate needs to be free
+        status:
+            type: integer
+            description: 'Status of the flight.\n\n0 = Scheduled\n\n1 = Canceled\n\n2 = Arrived\n\n3 = Departed'
+
+"""
+
 class Flight(UpdateMixin, ParsableDocument):
     nr = IntField(required=True)
     type = BooleanField()

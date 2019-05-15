@@ -8,7 +8,9 @@ from .baggage import Baggage
 # Needs to be import after baggage (embedded document)
 from .passenger import Passenger
 # Needs to be last as embedded documents need to be imported first (registration of documents)
-from .flight import Flight
+from .flight import Flight, flight_schema
+
+schemas = [('Flight', flight_schema)]
 
 def init(config, populate=True):
     connect_mongo(config)

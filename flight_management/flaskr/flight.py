@@ -6,6 +6,14 @@ bp = Blueprint('flight', __name__, url_prefix='/flight')
 
 @bp.route('/<id>', methods=['GET'])
 def get_flight(id):
+    """
+    Get single flight by id
+    ---
+    responses:
+        200:
+            schema:
+                $ref: "#/definitions/Flight"
+    """
     flight = Flight.objects.get(id=id)
 
     return json.dumps(flight.to_parsable())
