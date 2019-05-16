@@ -3,6 +3,7 @@ const router = express.Router();
 const amqpManager = require('../../events/amqp.manager');
 const uuid = require('uuid/v4');
 const Fuel = require('../../models/fuel.model');
+const RmqFuel = Fuel.rmq
 
 router.get('/', (req, res) => {
 	Fuel.find({})
@@ -36,23 +37,22 @@ router.post('/', (req, res) => {
 				message: 'New fuel tank has been added successfully.',
 				from: 'airside_management',
 				type: 'CREATE',
-				data: container,
-				old_data: {}
+				data: container
 			};
 			
 			amqpManager.connectRmq()
 				.then((channel) => {
 					amqpManager.sendMessageToQueue(channel, 'airside-fuel', JSON.stringify(payload));
-					res.status(201).json(payload);
 				})
 				.catch((error) => {
-					res.status(400).json({
-						message: 'Unable to add new fuel tank.',
-						error: error
-					});
+					const rmqPayload = new RmqFuel(payload);
+
+					rmqPayload.save().then((c) => {
+						console.log("Fuel created, but unable to connect to RabbitMQ")})
 				});
-		})
-		.catch((error) => res.status(400).json(error));
+			res.status(201).json(payload);
+	})
+	.catch((error) => res.status(400).json(error));
 });
 
 router.patch('/:id', (req, res) => {

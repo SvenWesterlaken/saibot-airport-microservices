@@ -1,6 +1,9 @@
 const amqp = require('amqplib');
 const workerManager = require('./worker.manager');
 
+const Fuel = require('../models/fuel.model');
+const RmqFuel = Fuel.rmq;
+
 // amount of tries reconnecting
 let count = 0;
 // existing channel is used when available
@@ -23,6 +26,27 @@ const reconnect = function (){
 		});
 };
 
+function restoreEvents() {
+	module.exports.connectRmq().then((ch) => {
+		console.log("Restoring events...");
+		RmqFuel.find({})
+			.then((containers) => {
+				containers.forEach((container) => {
+						module.exports.sendMessageToQueue(ch, 'airside-fuel', JSON.stringify(container));
+						RmqFuel.findOneAndDelete({_id: container._id})
+							.catch((error) => {
+								console.log(error);
+							})
+						})
+		})
+			.catch((error) => {
+				console.log(error)
+			});
+		console.log("Restoring events completed!");
+		})
+
+}
+
 module.exports = {
 	connectRmq() {
 		reconnecting = false;
@@ -35,13 +59,21 @@ module.exports = {
 					}
 				});
 				if (conn != null) {
-					channel = conn.createChannel();
-					reconnecting = false;
-					if (count > 0){
-						count = 0;
-						workerManager.init();
+					if (!reconnecting) {
+						reconnecting = false;
+
+						// check if connection was lost (count will increase by 1 for each attempt to reconnect)
+						// if so, we restart the workers and restore events (send to rabbitmq)
+						if (count > 0) {
+							count = 0;
+							workerManager.init();
+							delay(iVal)
+								.then(() => {
+									restoreEvents();
+								});
+						}
 					}
-					return channel;
+					return conn.createChannel();
 				} else {
 					return reconnecting ? null : reconnect();
 				}
