@@ -6,7 +6,7 @@ const RmqFuel = Fuel.rmq;
 
 // amount of tries reconnecting
 let count = 0;
-// existing channel is used when available
+// existing channel is used when available (not implemented yet)
 let channel = null;
 // no need for multiple reconnect attempts at the same time
 let reconnecting = false;

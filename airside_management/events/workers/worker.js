@@ -2,12 +2,14 @@ const amqpManager = require('../amqp.manager');
 let channel = null;
 
 module.exports.init = function (queueName, callbackEvent) {
-	channel = amqpManager.channel;
-	if (channel != null) {
-		return consume (channel, queueName, callbackEvent)
-	}
+	// reusing connection/channel not implemented
+	// channel = amqpManager.channel;
+	// if (channel != null) {
+	// 	return consume (channel, queueName, callbackEvent)
+	// }
 	amqpManager.connectRmq().then((ch) => {
-		amqpManager.channel = channel;
+		// amqpManager.channel = ch;
+		// channel = ch
 		return consume(ch, queueName, callbackEvent)
 	});
 };
