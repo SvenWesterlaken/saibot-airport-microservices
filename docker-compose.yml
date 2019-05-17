@@ -31,7 +31,7 @@ services:
       - rabbitmq
       - mongodb
     ports:
-      - "5004:8183"
+      - "5007:8183"
     # Link local dir to dir in container
     # Local: /flight_management
     # Container: /usr/scr/app
