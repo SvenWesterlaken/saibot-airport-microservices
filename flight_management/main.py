@@ -7,6 +7,7 @@ import mongo, env
 app = create_app()
 
 if __name__ == "__main__":
-    rabbitmq.connect()
+    rabbitmq.run()
+
     mongo.init(env.mongo_settings)
     app.run(debug=True, host='0.0.0.0', use_reloader=False)
