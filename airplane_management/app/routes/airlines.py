@@ -6,6 +6,9 @@ from app.models import Airline as f_airline
 from app.models import Airplane as f_airplane
 import json
 from flask import request
+from ..rabbitmq import rabbitmq
+import uuid
+from ..util.rabbitmq_message import RabbitmqMessage
 
 api = AirlineDto.api
 _airline = AirlineDto.airline
@@ -18,6 +21,7 @@ class Airline_list(Resource):
     @api.doc('list_of_registered_airlines')
     def get(self):
         airlines = [f.to_dict() for f in f_airline.select()]
+
         return json.dumps(airlines)
 
     @db_session
@@ -25,8 +29,16 @@ class Airline_list(Resource):
     @api.expect(_airline, validate=True)
     def post(self):
         airline = request.json
+        print("request method: ")
+        print(request.method)
+        print("app name: ")
+        print(api.name)
         new_airline = f_airline(**airline)
+
+        # message = RabbitmqMessage(message='create new airline', from_where=api.name, type=)
+
         return json.dumps(new_airline.to_dict())
+
 
 @api.route('/<public_id>')
 @api.param('public_id', 'The Airline identifier')
@@ -63,15 +75,6 @@ class Airline_plane_list(Resource):
     @db_session
     @api.doc('list_of_registered_airplanes_connected_to_an_airline')
     def get(self, public_id):
-        airplanes = f_airline[public_id].airplanes
+        airplane_objcts = f_airline[public_id].airplanes
+        airplanes = [x.to_dict() for x in airplane_objcts]
         return json.dumps(airplanes)
-
-
-
-
-
-
-
-
-
-

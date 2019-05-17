@@ -1,6 +1,7 @@
 import pika
 from retrying import retry
 
+
 class RabbitMQ:
 
     @retry(stop_max_attempt_number=3, wait_fixed=10000)
@@ -15,4 +16,6 @@ class RabbitMQ:
 
         return connection, channel
 
-rabbitmq = RabbitMQ()
+
+rabbitmq_publish = RabbitMQ()
+rabbitmq_consume = RabbitMQ()
