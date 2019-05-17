@@ -18,7 +18,7 @@ module.exports.init = () => {
 };
 
 function fuelWorkerInit() {
-	return fuelWorker.init('airside-fuel', 'fuel.create', fuelWorkerCallback.messageReceivedEvent);
+	return fuelWorker.init('airside-fuel', 'fuel.#', fuelWorkerCallback.messageReceivedEvent);
 }
 
 function runwayWorkerInit() {
