@@ -9,6 +9,8 @@ let reconnecting = false;
 // delay for reconnecting attempts in ms
 let iVal = 5000;
 
+let exchange = 'events';
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const reconnect = function (){
@@ -50,12 +52,12 @@ module.exports = {
 			})
 	},
 	channel,
-	sendMessageToQueue(channel, queueName, message) {
-		channel.assertQueue(queueName, {
-			durable: false
+	sendMessageToQueue(channel, key, message) {
+		channel.assertExchange(exchange, 'topic', {
+			durable: true
 		}).then(() => {
-			//Queue OK
-			channel.sendToQueue(queueName, Buffer.from(message));
+			//Exchange OK
+			channel.publish(exchange, key, Buffer.from(message), {deliveryMode: 2});
 			
 			console.log(" [x] Sent %s", message);
 		}).catch((error) => {
