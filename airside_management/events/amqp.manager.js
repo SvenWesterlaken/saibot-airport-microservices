@@ -86,11 +86,11 @@ module.exports = {
 	channel,
 	sendMessageToQueue(channel, queueName, message) {
 		channel.assertQueue(queueName, {
-			durable: false
+			durable: true
 		}).then(() => {
 			//Queue OK
-			channel.sendToQueue(queueName, Buffer.from(message));
-			
+			channel.sendToQueue(queueName, Buffer.from(message), {deliveryMode: 2});
+
 			console.log(" [x] Sent %s", message);
 		}).catch((error) => {
 			console.log('QUEUE ERROR PRODUCER');
@@ -99,11 +99,11 @@ module.exports = {
 	
 	consumeFromQueue(channel, queueName, callback) {
 		channel.assertQueue(queueName, {
-			durable: false
+			durable: true
 		}).then(() => {
 			//Queue OK
 			console.log('Worker for queue ' + queueName + ' started! Listening for messages...');
-			
+
 			channel.consume(queueName, function(message) {
 				callback(message.content.toString());
 			}, {
