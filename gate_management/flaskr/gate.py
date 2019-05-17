@@ -50,7 +50,7 @@ def create():
         'old_data': {}
     }
 
-    msg_handler.send_message_to_queue('gate', json.dumps(payload))
+    msg_handler.send_message_to_exchange('gate', json.dumps(payload))
 
     return json.dumps(new_gate.to_dict())
 
@@ -85,7 +85,7 @@ def update(id):
         'old_data': gate_old
     }
 
-    msg_handler.send_message_to_queue('gate', json.dumps(payload))
+    msg_handler.send_message_to_exchange('gate', json.dumps(payload))
 
     return json.dumps(gate.to_dict())
 
@@ -119,6 +119,6 @@ def delete(id):
         'old_data': gate_old
     }
 
-    msg_handler.send_message_to_queue('gate', json.dumps(payload))
+    msg_handler.send_message_to_exchange('gate', json.dumps(payload))
 
     return 'Succeeded'
