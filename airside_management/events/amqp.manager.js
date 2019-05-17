@@ -13,6 +13,8 @@ let reconnecting = false;
 // delay for reconnecting attempts in ms
 let iVal = 5000;
 
+let exchange = 'events';
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const reconnect = function (){
@@ -84,27 +86,44 @@ module.exports = {
 			})
 	},
 	channel,
-	sendMessageToQueue(channel, queueName, message) {
-		channel.assertQueue(queueName, {
+	sendMessageToQueue(channel, key, message) {
+		channel.assertExchange(exchange, 'topic', {
 			durable: true
 		}).then(() => {
-			//Queue OK
-			channel.sendToQueue(queueName, Buffer.from(message), {deliveryMode: 2});
-
+			//Exchange OK
+			channel.publish(exchange, key, Buffer.from(message), {deliveryMode: 2});
+			
 			console.log(" [x] Sent %s", message);
 		}).catch((error) => {
 			console.log('QUEUE ERROR PRODUCER');
 		});
+		//
+		// channel.assertQueue(queueName, {
+		// 	durable: true
+		// }).then(() => {
+		// 	//Queue OK
+		// 	channel.sendToQueue(queueName, Buffer.from(message), {deliveryMode: 2});
+		//
+		// 	console.log(" [x] Sent %s", message);
+		// }).catch((error) => {
+		// 	console.log('QUEUE ERROR PRODUCER');
+		// });
 	},
 	
-	consumeFromQueue(channel, queueName, callback) {
+	consumeFromQueue(channel, queueName, key, callback) {
+		channel.assertExchange(exchange, 'topic', {
+			durable: true
+		});
+		
 		channel.assertQueue(queueName, {
 			durable: true
-		}).then(() => {
+		}).then((queue) => {
 			//Queue OK
+			channel.bindQueue(queue.queue, exchange, key);
+			
 			console.log('Worker for queue ' + queueName + ' started! Listening for messages...');
 
-			channel.consume(queueName, function(message) {
+			channel.consume(queue.queue, function(message) {
 				callback(message.content.toString());
 			}, {
 				noAck: true
