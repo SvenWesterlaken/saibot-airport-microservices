@@ -9,6 +9,8 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+    volumes:
+      - rabbitmqdata:/data
 
   flight_management:
     # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
@@ -47,3 +49,6 @@ services:
       - MONGO_LOG_DIR=/dev/null
     ports:
       - 27017:27017
+      
+volumes:   
+  rabbitmqdata:

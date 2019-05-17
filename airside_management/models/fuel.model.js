@@ -14,6 +14,17 @@ const FuelSchema = new Schema({
 	timestamps: true
 });
 
+const RmqSchema = new Schema({
+	id: String,
+	message: String,
+	from: String,
+	type: String,
+	old_data: FuelSchema,
+	data: FuelSchema
+});
+
 const Fuel = mongoose.model('fuel', FuelSchema);
+const RmqFuel = mongoose.model('rmqFuel', RmqSchema);
 
 module.exports = Fuel;
+module.exports.rmq =  RmqFuel;
