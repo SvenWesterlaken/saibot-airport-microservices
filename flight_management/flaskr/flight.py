@@ -1,6 +1,7 @@
-import json, arrow
+import json, arrow, uuid
 from flask import Blueprint, request
 from mongo import CheckInCounter, Flight, Gate, Passenger
+from rabbitmq import rabbitmq_publisher as rp
 
 bp = Blueprint('flight', __name__, url_prefix='/flight')
 
@@ -155,7 +156,7 @@ def requestFreeGate():
             description: newly created flight
             schema:
                 $ref: '#/definitions/Flight'
-        412:
+        400:
             description: when there are no more free spots around that time
             schema:
                 type: object
@@ -176,15 +177,39 @@ def requestFreeGate():
     end_time = time.shift(minutes=+15) if is_departing else time.shift(hours=+1)
 
     overlapping_count = Flight.objects(start_time__lte=end_time.datetime, time__gte=start_time.datetime).count()
-    gates_count = 20 # needs to be coupled to a database value
+    gates_count = 5 # needs to be coupled to a database value
 
     if overlapping_count < gates_count:
         new_flight = Flight(**flight)
         new_flight.save()
 
-        return json.dumps(new_flight.to_parsable()), 200, {'Content-Type': 'application/json'}
+        flight_dict = new_flight.to_parsable()
+
+        queue_msg = {
+            'id': uuid.uuid4().hex,
+            'message': 'New flight has been added successfully.',
+            'from': 'flight_management',
+            'type': 'CREATE',
+            'data': flight_dict,
+            'old_data': {}
+        }
+
+        rp.publish_msg(rk='flight.create', msg=json.dumps(queue_msg))
+
+        return json.dumps(flight_dict), 200, {'Content-Type': 'application/json'}
     else:
-        return json.dumps({'msg': 'Sorry no free spots available around this time'}), 412, {'Content-Type': 'application/json'}
+        queue_msg = {
+            'id': uuid.uuid4().hex,
+            'message': 'New flight was requested, but no free spots were available at the given time.',
+            'from': 'flight_management',
+            'type': 'CREATE',
+            'data': {},
+            'old_data': Flight(**flight).to_parsable()
+        }
+
+        rp.publish_msg(rk='flight.create', msg=json.dumps(queue_msg))
+
+        return json.dumps({'msg': 'Sorry no free spots available around this time'}), 400, {'Content-Type': 'application/json'}
 
 @bp.route('/<id>/set_counter_gate', methods=['POST'])
 def set_counter_and_gate(id):

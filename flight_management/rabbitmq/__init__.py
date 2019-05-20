@@ -19,13 +19,16 @@ class RabbitMQPublisher:
         print(' x', 'Trying to connect to RabbitMQ on', self._url)
         self._connection = pika.BlockingConnection(pika.URLParameters(self._url))
 
+        self.open_channel()
+        self.setup_exchange()
+
     def close_connection(self):
         print(' x', 'Closing connection')
         self._connection.close()
 
     def reconnect(self):
-        self.should_reconnect = True
-        self.stop()
+        if self._connection.is_closed:
+            self.connect()
 
     def open_channel(self):
         print(' x', 'Creating new channel')
@@ -38,10 +41,10 @@ class RabbitMQPublisher:
     @retry(stop_max_attempt_number=3, wait_fixed=10000)
     def setup(self):
         self.connect()
-        self.open_channel()
-        self.setup_exchange()
 
     def publish_msg(self, rk, msg):
+        self.reconnect()
+
         self._channel.basic_publish(exchange=self.EXCHANGE, routing_key=rk, body=msg)
         print(f" x [Sent] {rk}: {msg}")
 
