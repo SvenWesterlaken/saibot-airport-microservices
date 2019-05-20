@@ -1,5 +1,4 @@
 from pony import orm
-import json
 
 db = orm.Database()
 

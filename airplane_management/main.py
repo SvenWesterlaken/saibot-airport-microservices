@@ -2,6 +2,8 @@ from app import create_app
 from app.models import db as mysql_db
 from app.models import populate_db
 from app.rabbitmq import rabbitmq_publish
+from app.rabbitmq import rabbitmq_consume
+from app.rabbitmq import msg_handler
 from apiv1 import blueprint as apiv1
 
 

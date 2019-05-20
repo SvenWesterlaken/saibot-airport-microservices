@@ -5,7 +5,7 @@ import json
 class RabbitmqMessage:
 
     def __init__(self, message, from_where, type, data, old_data):
-        self.id = uuid.uuid4()
+        self.id = str(uuid.uuid4())
         self.message = message
         self.from_where = from_where
         self.type = type

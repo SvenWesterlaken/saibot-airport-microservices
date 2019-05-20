@@ -1,17 +1,16 @@
-from app.routes import bp
 from ..util.dto import AirlineDto
 from flask_restplus import Resource
 from pony.orm import *
 from app.models import Airline as f_airline
-from app.models import Airplane as f_airplane
 import json
 from flask import request
-from ..rabbitmq import rabbitmq
-import uuid
 from ..util.rabbitmq_message import RabbitmqMessage
+from ..rabbitmq import msg_publisher
 
 api = AirlineDto.api
+name = AirlineDto.name
 _airline = AirlineDto.airline
+publisher = msg_publisher.Message_publisher('events')
 
 
 @api.route("/")
@@ -29,13 +28,13 @@ class Airline_list(Resource):
     @api.expect(_airline, validate=True)
     def post(self):
         airline = request.json
-        print("request method: ")
-        print(request.method)
-        print("app name: ")
-        print(api.name)
+
         new_airline = f_airline(**airline)
 
-        # message = RabbitmqMessage(message='create new airline', from_where=api.name, type=)
+        message = RabbitmqMessage(message='New airline has been added successfully', from_where=name, type=request.method, data=new_airline.to_dict(),
+                                  old_data='{}')
+
+        publisher.publish_message(message.to_json(), api.name)
 
         return json.dumps(new_airline.to_dict())
 
@@ -57,14 +56,29 @@ class Airline(Resource):
     def put(self, public_id):
         airline_update = request.json
         airline = f_airline[public_id]
+        old_data = f_airline[public_id].to_dict()
         airline.update_props(airline_update)
+
+        message = RabbitmqMessage(message='Airline has been updated successfully', from_where=name, type=request.method, data=airline.to_dict(),
+                                  old_data=old_data)
+
+        publisher.publish_message(message.to_json(), api.name)
 
         return json.dumps(airline.to_dict())
 
     @db_session
     @api.doc('delete an Airline')
     def delete(self, public_id):
+
+        airline = f_airline[public_id].to_dict()
         f_airline[public_id].delete()
+
+        message = RabbitmqMessage(message='Airline has been deleted successfully', from_where=name, type=request.method,
+                                  data="{}",
+                                  old_data=airline)
+
+        publisher.publish_message(message.to_json(), api.name)
+
         return "success"
 
 
