@@ -1,6 +1,16 @@
-import pika, functools, time, threading
+import pika, functools, time, threading, uuid
 from retrying import retry
 from . import msg_handler
+
+def create_queue_msg(type, message, data={}, old_data={}):
+    return {
+        'id': uuid.uuid4().hex,
+        'message': message,
+        'from': 'flight_management',
+        'type': type,
+        'data': data,
+        'old_data': old_data
+    }
 
 class RabbitMQPublisher:
     EXCHANGE = 'events'
@@ -16,7 +26,6 @@ class RabbitMQPublisher:
         self._url = amqp_url
 
     def connect(self):
-        print(' x', 'Trying to connect to RabbitMQ on', self._url)
         self._connection = pika.BlockingConnection(pika.URLParameters(self._url))
 
         self.open_channel()
@@ -27,8 +36,8 @@ class RabbitMQPublisher:
         self._connection.close()
 
     def reconnect(self):
-        if self._connection.is_closed:
-            self.connect()
+        print(' x', 'Trying to reconnect to RabbitMQ on', self._url)
+        self.connect()
 
     def open_channel(self):
         print(' x', 'Creating new channel')
@@ -40,13 +49,21 @@ class RabbitMQPublisher:
 
     @retry(stop_max_attempt_number=3, wait_fixed=10000)
     def setup(self):
+        print(' x', 'Trying to connect to RabbitMQ on', self._url)
         self.connect()
 
-    def publish_msg(self, rk, msg):
-        self.reconnect()
-
+    def __publish_message(self, rk, msg):
         self._channel.basic_publish(exchange=self.EXCHANGE, routing_key=rk, body=msg)
         print(f" x [Sent] {rk}: {msg}")
+
+    def publish_msg(self, rk, msg):
+        try:
+            self.__publish_message(rk, msg)
+        except pika.exceptions.StreamLostError:
+            self.reconnect()
+            self.__publish_message(rk, msg)
+
+
 
 
 class RabbitMQConsumer:
