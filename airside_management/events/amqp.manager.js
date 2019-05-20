@@ -6,8 +6,8 @@ const RmqFuel = Fuel.rmq;
 
 // amount of tries reconnecting
 let count = 0;
-// existing channel is used when available (not implemented yet)
-let channel = null;
+
+let conn = null;
 // no need for multiple reconnect attempts at the same time
 let reconnecting = false;
 // delay for reconnecting attempts in ms
@@ -17,7 +17,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const reconnect = function (){
 	reconnecting = true;
-	channel = null;
+	module.exports.channel = null;
 	count+=1;
 	console.log("reconnecting #" + count);
 	delay(iVal)
@@ -27,63 +27,102 @@ const reconnect = function (){
 };
 
 function restoreEvents() {
-	module.exports.connectRmq().then((ch) => {
-		console.log("Restoring events...");
-		RmqFuel.find({})
-			.then((containers) => {
-				containers.forEach((container) => {
-						module.exports.sendMessageToQueue(ch, 'airside-fuel', JSON.stringify(container));
-						RmqFuel.findOneAndDelete({_id: container._id})
-							.catch((error) => {
-								console.log(error);
-							})
-						})
-		})
-			.catch((error) => {
-				console.log(error)
-			});
-		console.log("Restoring events completed!");
-		})
-
+	console.log("Restoring events...");
+	RmqFuel.find({})
+		.then((containers) => {
+			// if any, create new connection
+			if (containers.length > 0) {
+				if (conn != null) {
+					console.log('Creating separate channel for restoration...');
+					conn.createConfirmChannel().then((ch) => {
+						containers.forEach((container) => {
+							ch.sendToQueue('airside-fuel', Buffer.from(JSON.stringify(container)), {}, function(err, ok) {
+								if (err !== null) console.warn('Message nacked!');
+								else {
+									RmqFuel.findOneAndDelete({_id: container._id})
+										.catch((error) => {
+											console.log(error);
+										})
+								}
+							});
+						});
+						ch.waitForConfirms().then(() => {
+							ch.close();
+							console.log("Restoring events completed! -- channel closed");
+						}).catch(() => {
+							ch.close();
+							console.warn("Message(s) nacked -- channel closed");
+						});
+					})
+				}
+			} else {
+				console.log("No events available to restore");
+			}
+	})
+		.catch((error) => {
+			console.log(error)
+		});
 }
 
+function createChannel() {
+	if (conn != null) {
+		if (module.exports.channel != null && !module.exports.channel.connection.closed) {
+			console.log("Using existing channel...");
+			return channel;
+		} else {
+			conn.createChannel().then((ch) => {
+				console.log("Creating new channel...");
+				module.exports.channel = ch;
+				if (!reconnecting) {
+					reconnecting = false;
+
+					// check if connection was lost (count will increase by 1 for each attempt to reconnect)
+					// if so, we restart the workers and restore events (send to rabbitmq)
+					if (count > 0) {
+						count = 0;
+						workerManager.init();
+						delay(iVal)
+							.then(() => {
+								restoreEvents();
+							});
+				}
+			}
+			return module.exports.channel;
+		});}
+	} else {
+		return reconnecting ? null : reconnect();
+	}
+}
 module.exports = {
 	connectRmq() {
 		reconnecting = false;
-		return amqp.connect('amqp://rabbitmq')
-			.then((conn) => {
-				conn.on('error', () => {if(!reconnecting) reconnect.bind(this)});
-				conn.on("close", (err) => {
-					if (err) {
-						 return reconnecting ? null : reconnect();
-					}
-				});
-				if (conn != null) {
-					if (!reconnecting) {
-						reconnecting = false;
 
-						// check if connection was lost (count will increase by 1 for each attempt to reconnect)
-						// if so, we restart the workers and restore events (send to rabbitmq)
-						if (count > 0) {
-							count = 0;
-							workerManager.init();
-							delay(iVal)
-								.then(() => {
-									restoreEvents();
-								});
+		if (conn != null) {
+			console.log("Using existing connection...");
+			return createChannel();
+		} else {
+			console.log("Creating new connection...");
+			amqp.connect('amqp://rabbitmq')
+				.then((c) => {
+					conn = c;
+					conn.on('error', () => {
+						conn = null;
+						if(!reconnecting) reconnect.bind(this)});
+					conn.on("close", (err) => {
+						conn = null;
+						if (err) {
+							return reconnecting ? null : reconnect();
 						}
-					}
-					return conn.createChannel();
-				} else {
-					return reconnecting ? null : reconnect();
-				}
+					});
+					return createChannel();
 			}, function connectionFailed() {
+					conn = null;
 				return reconnecting ? null : reconnect();
 			}).catch(() => {
+				conn = null;
 				return reconnecting ? null : reconnect();
 			})
-	},
-	channel,
+	}},
 	sendMessageToQueue(channel, queueName, message) {
 		channel.assertQueue(queueName, {
 			durable: true
@@ -101,6 +140,7 @@ module.exports = {
 		channel.assertQueue(queueName, {
 			durable: true
 		}).then(() => {
+			channel.prefetch(1);
 			//Queue OK
 			console.log('Worker for queue ' + queueName + ' started! Listening for messages...');
 
