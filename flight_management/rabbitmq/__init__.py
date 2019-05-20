@@ -1,13 +1,60 @@
-import pika, functools, time
+import pika, functools, time, threading
+from retrying import retry
 from . import msg_handler
 
+class RabbitMQPublisher:
+    EXCHANGE = 'events'
+    EXCHANGE_TYPE = 'topic'
+
+    def __init__(self, amqp_url):
+        self.pers_properties = pika.BasicProperties(delivery_mode=2)
+
+        self._connection = None
+        self._channel = None
+        self._closing = False
+
+        self._url = amqp_url
+
+    def connect(self):
+        print(' x', 'Trying to connect to RabbitMQ on', self._url)
+        self._connection = pika.BlockingConnection(pika.URLParameters(self._url))
+
+    def close_connection(self):
+        print(' x', 'Closing connection')
+        self._connection.close()
+
+    def reconnect(self):
+        self.should_reconnect = True
+        self.stop()
+
+    def open_channel(self):
+        print(' x', 'Creating new channel')
+        self._channel = self._connection.channel()
+
+    def setup_exchange(self):
+        self._channel.exchange_declare(exchange=self.EXCHANGE, exchange_type=self.EXCHANGE_TYPE)
+        print(' x', 'Exchange declared', self.EXCHANGE)
+
+    @retry(stop_max_attempt_number=3, wait_fixed=10000)
+    def setup(self):
+        self.connect()
+        self.open_channel()
+        self.setup_exchange()
+
+    def publish_msg(self, rk, msg):
+        self._channel.basic_publish(exchange=self.EXCHANGE, routing_key=rk, body=msg)
+        print(f" x [Sent] {rk}: {msg}")
+
+
 class RabbitMQConsumer:
+    """
+    Holder object for a rabbitmq consumer.
+    Should be used in a different thread with RabbitMQConsumerThread (as the parent)
+    """
     EXCHANGE = 'events'
     EXCHANGE_TYPE = 'topic'
 
     def __init__(self, amqp_url, q_name, routing_key):
-        self.pers_properties = pika.BasicProperties(delivery_mode=2)
-
         self.should_reconnect = False
         self.was_consuming = False
 
@@ -92,7 +139,7 @@ class RabbitMQConsumer:
     def on_queue_declareok(self, _unused_frame, userdata):
         print(' x', 'Binding', self.EXCHANGE, 'to', userdata, 'with', self._routing_key)
         cb = functools.partial(self.on_bindok, userdata=userdata)
-        self._channel.queue_bind(q_name, self.EXCHANGE, routing_key=self._routing_key, callback=cb)
+        self._channel.queue_bind(userdata, self.EXCHANGE, routing_key=self._routing_key, callback=cb)
 
     def on_bindok(self, _unused_frame, userdata):
         print(' x', 'Queue bound:', userdata)
@@ -101,9 +148,9 @@ class RabbitMQConsumer:
     def set_qos(self):
         self._channel.basic_qos(prefetch_count=self._prefetch_count, callback=self.on_basic_qos_ok)
 
-    def on_basic_qos_ok(self, _unused_frame, userdata):
-        print(' x', 'QOS set for', userdata[0], 'to:', self._prefetch_count)
-        self.start_consuming(userdata)
+    def on_basic_qos_ok(self, _unused_frame,):
+        print(' x', 'QOS set to:', self._prefetch_count)
+        self.start_consuming()
 
     def start_consuming(self):
         print(' x', 'Issuing consumer related RPC commands')
@@ -111,6 +158,7 @@ class RabbitMQConsumer:
         consumer_tag = self._channel.basic_consume(self._queue, self.on_message)
         self.was_consuming = True
         self._consuming = True
+        print(' x', 'Listening for messages')
 
     def on_consumer_cancelled(self, method_frame):
         print(' x', 'Consumer was cancelled remotely, shutting down', method_frame)
@@ -118,8 +166,8 @@ class RabbitMQConsumer:
         if self._channel:
             self._channel.close()
 
-    def on_message(ch, basic_deliver, properties, body):
-        print(f" [x] {method.routing_key}: {body}")
+    def on_message(self, ch, method, properties, body):
+        print(f" x [Recieved] {method.routing_key}: {body}")
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
@@ -140,16 +188,16 @@ class RabbitMQConsumer:
 
         print(' x', 'Stopped RabbitMQ')
 
-class RabbitMQ:
-    def __init__(self, amqp_url, consumers):
+class RabbitMQConsumerThread(threading.Thread):
+    def __init__(self, amqp_url, q_name, rk):
+        super(RabbitMQConsumerThread, self).__init__()
+
         self._reconnect_delay = 0
         self._reconnect_tries = 0
         self._amqp_url = amqp_url
-
-        for q_name, rk in consumers:
-            self._q_name = q_name
-            self._rk = rk
-            self._consumer = RabbitMQConsumer(self._amqp_url, q_name, rk)
+        self._q_name = q_name
+        self._rk = rk
+        self._consumer = RabbitMQConsumer(self._amqp_url, q_name, rk)
 
     def run(self):
         while self._reconnect_tries < 3:
@@ -160,6 +208,9 @@ class RabbitMQ:
                 break
 
             self._maybe_reconnect()
+
+    def stop(self):
+        self._consumer.stop()
 
     def _maybe_reconnect(self):
         if self._consumer.should_reconnect:
@@ -173,12 +224,10 @@ class RabbitMQ:
         if self._consumer.was_consuming:
             self._reconnect_delay = 0
         else:
-            self._reconnect_delay += 1
-        if self._reconnect_delay > 30:
-            self._reconnect_delay = 30
+            self._reconnect_delay += 10
+        if self._reconnect_delay > 60:
+            self._reconnect_delay = 60
         return self._reconnect_delay
 
-
-
-
-rabbitmq = RabbitMQ('amqp://guest:guest@rabbitmq:5672/', consumers=[('f_mn_test', 'test')])
+rabbitmq_consumer = RabbitMQConsumerThread('amqp://guest:guest@rabbitmq:5672/', q_name='f_mn_test', rk='test')
+rabbitmq_publisher = RabbitMQPublisher('amqp://guest:guest@rabbitmq:5672/')
