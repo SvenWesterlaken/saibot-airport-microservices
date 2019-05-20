@@ -1,6 +1,7 @@
 import os
-from flask import Flask
-from . import check_in_counter
+from flask import Flask, jsonify
+from flask_swagger import swagger
+from . import check_in_counter, swagger_ui
 
 def create_app(test_config=None):
     # create and configure the app
@@ -23,11 +24,16 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello world'
+    @app.route('/api/1/docs/swagger.json')
+    def spec():
+        swag = swagger(app)
+        swag['info']['version'] = '1.0.0'
+        swag['info']['title'] = 'Saibot Check-in Counter Management API'
+        swag['definitions'] = swagger_ui.get_definitions()
 
-    app.register_blueprint(check_in_counter.bp)
+        return jsonify(swag)
+
+    app.register_blueprint(check_in_counter.bp, url_prefix = check_in_counter.bp.url_prefix)
+    app.register_blueprint(swagger_ui.bp, url_prefix = swagger_ui.url)
 
     return app

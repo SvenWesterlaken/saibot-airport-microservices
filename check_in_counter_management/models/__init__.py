@@ -2,7 +2,9 @@ import string, arrow
 from random import randint, choice
 from pony.orm import db_session
 from .base import db
-from .check_in_counter import CheckInCounter
+from .check_in_counter import *
+
+schemas = [('CheckInCounter', counter_schema)]
 
 @db_session
 def populate_db():

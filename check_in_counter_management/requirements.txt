@@ -1,4 +1,6 @@
 flask
+flask-swagger
+flask-swagger-ui
 numpy
 pika
 pony
