@@ -9,6 +9,7 @@ module.exports.messageReceivedEvent = (message) => {
 	console.log(' [x] Employee worker message: ' + message);
 	let jsonMessage = JSON.parse(message);
 	let data = jsonMessage.data;
+	let oldData = jsonMessage.old_data;
 	
 	switch (jsonMessage.type) {
 		case 'CREATE':
@@ -19,7 +20,7 @@ module.exports.messageReceivedEvent = (message) => {
 				}).catch((error) => console.log('Error: ' + error));
 			break;
 			
-		case 'UPDATE':
+		case 'PATCH':
 			Employee.findOne({_id: data._id})
 				.then((employee) => {
 					if (data.first_name)
@@ -37,10 +38,9 @@ module.exports.messageReceivedEvent = (message) => {
 			break;
 			
 		case 'DELETE':
-			Employee.findOneAndDelete({_id: data._id})
+			Employee.findOneAndDelete({_id: oldData._id})
 				.then((employee) => {
-					console.log('Employee deleted successfully:');
-					console.log(employee);
+					console.log('Employee deleted successfully.');
 				}).catch((error) => console.log('Error: ' + error));
 			break;
 	}
