@@ -3,7 +3,7 @@ version: "3.7"
 services:
 # ------------------------------------------------------------------------------------------------
 #
-# Shared containers
+# Management containers
 #
 # ------------------------------------------------------------------------------------------------
   rabbitmq:
@@ -22,6 +22,16 @@ services:
       PMA_ARBITRARY: 1
     ports:
     - '8080:80'
+
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - saibot_portainer:/data
 
 # ------------------------------------------------------------------------------------------------
 #
@@ -218,3 +228,4 @@ volumes:
   saibot_employee_mongo:
   saibot_airside_mongo:
   saibot_security_redis:
+  saibot_portainer:
