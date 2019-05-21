@@ -1,6 +1,5 @@
 FROM svenwstrl/python-nodemon-dev
 
-COPY requirements.txt requirements.txt
+COPY . .
 
 RUN pip install -r requirements.txt
-
