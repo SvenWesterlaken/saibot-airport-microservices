@@ -25,10 +25,11 @@ services:
 
   portainer:
     image: portainer/portainer
+    container_name: saibot_portainer
     command: -H unix:///var/run/docker.sock
     restart: always
     ports:
-      - 9000:9000
+      - '9000:9000'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - saibot_portainer:/data
@@ -139,6 +140,19 @@ services:
       REDIS_HOST: redis_security_management
       REDIS_PORT: 6379
 
+  passenger_integration:
+    image: twanvm92/saibot_passenger_integration
+    container_name: saibot_passenger_integration
+    build: ./passenger_integration
+    volumes:
+      - ./passenger_integration:/usr/src/app
+    tty: true
+    ports:
+      - '5006:5000'
+    environment:
+      FLASK_APP: main.py
+      FLASK_ENV: development
+
 # ------------------------------------------------------------------------------------------------
 #
 # Database containers
@@ -213,6 +227,16 @@ services:
     ports:
       - "3309:3306"
 
+  mysql_passenger_integration:
+    image: mysql:5.7
+    container_name: saibot_passenger_i_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: saibot
+    volumes:
+      - passenger_integration_mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
 # ------------------------------------------------------------------------------------------------
 #
 # Volumes
@@ -220,6 +244,7 @@ services:
 # ------------------------------------------------------------------------------------------------
 
 volumes:
+  passenger_integration_mysql:
   check_in_counter_mysql:
   gate_mysql:
   airplane_mysql:

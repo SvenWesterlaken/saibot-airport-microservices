@@ -67,7 +67,7 @@ refueled.
 - [ ] Retail is able to rent a spot at the tax-free zones.
 
 ### Requirements for assignment:
-1. - [x] ArchiMate model of the enterprise architecture. ([can be found here](/_docs/enterprise_architecture_diagram/motivation))
+1. - [x] ArchiMate model of the enterprise architecture. ([can be found here](/_docs/enterprise_architecture_diagram/))
 2. - [x] Context map.
 3. - [x] Non-functional requirements.
 4. - [x] Functional requirements added to the given requirements, based on assumptions.
