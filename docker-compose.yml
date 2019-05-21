@@ -9,6 +9,8 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+    volumes:
+      - rabbitmqdata:/data
 
   flight_management:
     # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
@@ -20,6 +22,23 @@ services:
     # Container: /usr/scr/app
     volumes:
       - ./flight_management:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
+  airside_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: thimok22/airside_management:latest
+    # Directory where the Dockerfile is located
+    build: ./airside_management
+    depends_on:
+      - rabbitmq
+      - mongo_airside_management
+    ports:
+      - "5003:8181"
+    # Link local dir to dir in container
+    # Local: /flight_management
+    # Container: /usr/scr/app
+    volumes:
+      - ./airside_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
   employee_management:
@@ -39,6 +58,14 @@ services:
       - ./employee_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
+
+  mongo_airside_management:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - 27019:27017
   mongo_employee_management:
     image: mongo:latest
     environment:
@@ -46,3 +73,6 @@ services:
       - MONGO_LOG_DIR=/dev/null
     ports:
       - 27018:27017
+      
+volumes:   
+  rabbitmqdata:
