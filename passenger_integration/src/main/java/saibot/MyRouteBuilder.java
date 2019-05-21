@@ -26,20 +26,16 @@ public class MyRouteBuilder extends RouteBuilder {
                 .bean("passengerMapper", "getMap")
                 .to("sqlComponent:{{sql.insertPassenger}}");
 
-        from("timer://simpleTimer?period=10000")
-                .to("sqlComponent:{{sql.getPassengers}}")
-                .bean("passengerMapper", "readPassengers")
-                .setHeader(Exchange.HTTP_METHOD, simple("POST"))
-                .setHeader(Exchange.CONTENT_TYPE, constant("application/json")).to("http://localhost:8080/employee")
-                .log("${body}");
-
 
         from("timer://simpleTimer?period=10000")
                 .to("sqlComponent:{{sql.getPassengers}}")
                 .marshal(jsonFormat)
                 .setHeader(Exchange.HTTP_METHOD, simple("POST"))
-                .setHeader(Exchange.CONTENT_TYPE, constant("application/json")).to("http://localhost:8080/employee")
-                .log("${body}");
+                .setHeader(Exchange.CONTENT_TYPE, constant("application/json"))
+                .to("http4://flight_management:5000/api/1/flight/5cdc02bbe3dafee2a3538d8e/add_passenger")
+                .process(exchange -> log.info("The response code is: {}", exchange.getIn().getHeader(Exchange.HTTP_RESPONSE_CODE)))
+        ;
+
     }
 
 }

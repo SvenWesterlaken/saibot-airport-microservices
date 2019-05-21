@@ -2,12 +2,20 @@ version: "3.7"
 
 services:
 
-#  # Main RabbitMQ container
-#  rabbitmq:
-#    image: rabbitmq:3-management
-#    ports:
-#      - '5672:5672'
-#      - '15672:15672'
+  # Main RabbitMQ container
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+  #  PHPmyadmin container to connect to all mysql databases
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+    ports:
+      - '8080:80'
 
   flight_management:
     # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
@@ -15,12 +23,21 @@ services:
     # Directory where the Dockerfile is located
     build: ./flight_management
     # Link local dir to dir in container
-    # Local: /flight_management
-    # Container: /usr/scr/app
+    # Local:      /flight_management
+    # Container:  /usr/scr/app
     volumes:
       - ./flight_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
+    # Connect inner port 5000 to outer port 5001 (container can be accessed by localhost:5001 this way)
+    ports:
+      - '5001:5000'
+    # Set environment variables
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
+      MONGO_HOST: mongo_flight_management
+      MONGO_DB: saibot_flight_management
 
   passenger_integration:
     # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
@@ -50,5 +67,16 @@ services:
       - passenger_integration_mysql:/var/lib/mysql
     ports:
       - "3306:3306"
+
+
+  mongo_flight_management:
+    image: mongo
+    restart: always
+    volumes:
+      - saibot_flight_mongo:/data/db
+    ports:
+      - "27017:27017"
+
 volumes:
+  saibot_flight_mongo:
   passenger_integration_mysql:
