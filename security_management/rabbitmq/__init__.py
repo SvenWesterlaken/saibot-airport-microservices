@@ -82,7 +82,7 @@ class RabbitMQConsumer:
 
     def setup_exchange(self, name):
         cb = functools.partial(self.on_exchange_declareok, userdata=name)
-        self._channel.exchange_declare(exchange=name, exchange_type=self.EXCHANGE_TYPE, callback=cb)
+        self._channel.exchange_declare(exchange=name, exchange_type=self.EXCHANGE_TYPE, callback=cb, durable=True)
 
     def on_exchange_declareok(self, _unused_frame, userdata):
         print(' x', 'Exchange declared', userdata)

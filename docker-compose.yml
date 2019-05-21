@@ -5,17 +5,20 @@ services:
   # Main RabbitMQ container
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: saibot_rabbitmq
     ports:
       - '5672:5672'
       - '15672:15672'
+    volumes:
+      - rabbitmqdata:/data
 
-  #  PHPmyadmin container to connect to all mysql databases
+   #  PHPmyadmin container to connect to all mysql databases
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_ARBITRARY: 1
     ports:
-      - '8080:80'
+    - '8080:80'
 
   flight_management:
     # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
@@ -38,6 +41,55 @@ services:
       FLASK_ENV: development
       MONGO_HOST: mongo_flight_management
       MONGO_DB: saibot_flight_management
+
+  airside_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: thimok22/airside_management:latest
+    # Directory where the Dockerfile is located
+    build: ./airside_management
+    depends_on:
+      - rabbitmq
+      - mongo_airside_management
+    ports:
+      - "5003:8181"
+    # Show colored logs when starting with docker-compose up
+    tty: true
+
+  gate_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: svenwstrl/saibot_gate_management
+    # Directory where the Dockerfile is located
+    build: ./gate_management
+    # Link local dir to dir in container
+    # Local:      /gate_management
+    # Container:  /usr/scr/app
+    volumes:
+      - ./gate_management:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
+    # Connect inner port 5000 to outer port 5004 (container can be accessed by localhost:5004 this way)
+    ports:
+      - '5004:5000'
+    # Set environment variables
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
+      MYSQL_HOST: mysql_gate_management
+      MYSQL_PASS: saibot
+      MYSQL_DB: saibot_gate_management
+
+  employee_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: thimok22/employee_management:latest
+    # Directory where the Dockerfile is located
+    build: ./employee_management
+    depends_on:
+      - rabbitmq
+      - mongo_employee_management
+    ports:
+      - "5007:8183"
+    # Show colored logs when starting with docker-compose up
+    tty: true
 
   mongo_flight_management:
     image: mongo
@@ -70,7 +122,33 @@ services:
       - 6379:6379
     command: redis-server --appendonly yes
 
+  mongo_airside_management:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - 27019:27017
+
+  mongo_employee_management:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - 27018:27017
+
+  mysql_gate_management:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: saibot
+    volumes:
+      - gate_mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
 volumes:
+  gate_mysql:
+  rabbitmqdata:
   saibot_flight_mongo:
   saibot_security_redis:

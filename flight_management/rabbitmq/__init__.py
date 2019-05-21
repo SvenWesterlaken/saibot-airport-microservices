@@ -43,7 +43,7 @@ class RabbitMQPublisher:
         self._channel = self._connection.channel()
 
     def setup_exchange(self):
-        self._channel.exchange_declare(exchange=self.EXCHANGE, exchange_type=self.EXCHANGE_TYPE)
+        self._channel.exchange_declare(exchange=self.EXCHANGE, exchange_type=self.EXCHANGE_TYPE, durable=True)
         print(' x', 'Exchange declared', self.EXCHANGE)
 
     @retry(stop_max_attempt_number=3, wait_fixed=10000)
@@ -142,7 +142,7 @@ class RabbitMQConsumer:
 
     def setup_exchange(self, name):
         cb = functools.partial(self.on_exchange_declareok, userdata=name)
-        self._channel.exchange_declare(exchange=name, exchange_type=self.EXCHANGE_TYPE, callback=cb)
+        self._channel.exchange_declare(exchange=name, exchange_type=self.EXCHANGE_TYPE, callback=cb, durable=True)
 
     def on_exchange_declareok(self, _unused_frame, userdata):
         print(' x', 'Exchange declared', userdata)
