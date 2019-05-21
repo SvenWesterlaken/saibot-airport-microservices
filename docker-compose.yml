@@ -1,0 +1,231 @@
+version: "3.7"
+
+services:
+# ------------------------------------------------------------------------------------------------
+#
+# Management containers
+#
+# ------------------------------------------------------------------------------------------------
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: saibot_rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - rabbitmqdata:/data
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: saibot_phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+    ports:
+    - '8080:80'
+
+  portainer:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - saibot_portainer:/data
+
+# ------------------------------------------------------------------------------------------------
+#
+# Microservice containers
+#
+# ------------------------------------------------------------------------------------------------
+
+  flight_management:
+    image: svenwstrl/saibot_flight_management
+    build: ./flight_management
+    container_name: saibot_flight_management
+    volumes:
+      - ./flight_management:/usr/src/app
+    tty: true
+    ports:
+      - '5001:5000'
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
+      MONGO_HOST: mongo_flight_management
+      MONGO_DB: saibot_flight_management
+
+  check_in_counter_management:
+    image: svenwstrl/saibot_check_in_counter_management
+    build: ./check_in_counter_management
+    container_name: saibot_cic_management
+    volumes:
+      - ./check_in_counter_management:/usr/src/app
+    tty: true
+    ports:
+      - '5005:5000'
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
+      MYSQL_HOST: mysql_check_in_counter_management
+      MYSQL_PASS: saibot
+      MYSQL_DB: saibot_check_in_counter_management
+
+  airside_management:
+    image: thimok22/airside_management:latest
+    container_name: saibot_airside_management
+    build: ./airside_management
+    depends_on:
+      - rabbitmq
+      - mongo_airside_management
+    ports:
+      - "5003:8181"
+    tty: true
+
+  gate_management:
+    image: svenwstrl/saibot_gate_management
+    build: ./gate_management
+    container_name: saibot_gate_management
+    volumes:
+      - ./gate_management:/usr/src/app
+    tty: true
+    ports:
+      - '5004:5000'
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
+      MYSQL_HOST: mysql_gate_management
+      MYSQL_PASS: saibot
+      MYSQL_DB: saibot_gate_management
+
+  airplane_management:
+    image: twanvm92/saibot_airplane_management
+    build: ./airplane_management
+    container_name: saibot_airplane_management
+    volumes:
+    - ./airplane_management:/usr/src/app
+    tty: true
+    ports:
+    - '5002:5000'
+    environment:
+      FLASK_APP: main.py
+      FLASK_ENV: development
+      MYSQL_HOST: mysql_airplane_management
+      MYSQL_PASS: saibot
+      MYSQL_DB: saibot_airplane_management
+
+  employee_management:
+    image: thimok22/employee_management:latest
+    build: ./employee_management
+    container_name: saibot_employee_management
+    depends_on:
+      - rabbitmq
+      - mongo_employee_management
+    ports:
+      - "5007:8183"
+    tty: true
+
+  security_management:
+    image: svenwstrl/saibot_security_management
+    build: ./security_management
+    container_name: saibot_security_management
+    volumes:
+      - ./security_management:/usr/src/app
+    tty: true
+    ports:
+      - '5008:5000'
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
+      REDIS_HOST: redis_security_management
+      REDIS_PORT: 6379
+
+# ------------------------------------------------------------------------------------------------
+#
+# Database containers
+#
+# ------------------------------------------------------------------------------------------------
+
+  redis_security_management:
+    image: redis
+    restart: always
+    container_name: saibot_security_redis
+    volumes:
+      - saibot_security_redis:/data
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+
+  mongo_flight_management:
+    image: mongo
+    container_name: saibot_flight_mongo
+    restart: always
+    volumes:
+      - saibot_flight_mongo:/data/db
+    ports:
+      - "27017:27017"
+
+  mongo_airside_management:
+    image: mongo:latest
+    container_name: saibot_airside_mongo
+    volumes:
+      - saibot_airside_mongo:/data/db
+    ports:
+      - "27019:27017"
+
+  mongo_employee_management:
+    image: mongo:latest
+    container_name: saibot_employee_mongo
+    volumes:
+      - saibot_employee_mongo:/data/db
+    ports:
+      - "27018:27017"
+
+  mysql_gate_management:
+    image: mysql:5.7
+    container_name: saibot_gate_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: saibot
+      MYSQL_DATABASE: saibot_gate_management
+    volumes:
+      - gate_mysql:/var/lib/mysql
+    ports:
+      - "3308:3306"
+
+  mysql_airplane_management:
+    image: mysql:5.7
+    container_name: saibot_airplane_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: saibot
+      MYSQL_DATABASE: saibot_airplane_management
+    volumes:
+    - airplane_mysql:/var/lib/mysql
+    ports:
+    - "3307:3306"
+
+  mysql_check_in_counter_management:
+    image: mysql:5.7
+    container_name: saibot_cic_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: saibot
+      MYSQL_DATABASE: saibot_check_in_counter_management
+    volumes:
+      - check_in_counter_mysql:/var/lib/mysql
+    ports:
+      - "3309:3306"
+
+# ------------------------------------------------------------------------------------------------
+#
+# Volumes
+#
+# ------------------------------------------------------------------------------------------------
+
+volumes:
+  check_in_counter_mysql:
+  gate_mysql:
+  airplane_mysql:
+  rabbitmqdata:
+  saibot_flight_mongo:
+  saibot_employee_mongo:
+  saibot_airside_mongo:
+  saibot_security_redis:
+  saibot_portainer:

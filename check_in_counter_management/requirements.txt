@@ -1,0 +1,10 @@
+flask
+flask-swagger
+flask-swagger-ui
+numpy
+pika
+pony
+arrow
+pymysql
+retrying
+werkzeug==0.14.1

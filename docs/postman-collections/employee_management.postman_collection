@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "18159299-a465-45a5-8ddd-38ba579f528c",
+		"name": "Saibot Intl. Airport Employee Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET specific employee",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:5007/api/v1/employee/5cdbd781a05e1900128216a0",
+					"host": [
+						"localhost"
+					],
+					"port": "5007",
+					"path": [
+						"api",
+						"v1",
+						"employee",
+						"5cdbd781a05e1900128216a0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all employees",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:5007/api/v1/employee/",
+					"host": [
+						"localhost"
+					],
+					"port": "5007",
+					"path": [
+						"api",
+						"v1",
+						"employee",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH specific employee",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"first_name\": \"Peter\",\n\t\"last_name\": \"De Vries\",\n\t\"dob\": \"1995-10-09\"\n}"
+				},
+				"url": {
+					"raw": "localhost:5007/api/v1/employee/5cdbd781a05e1900128216a0",
+					"host": [
+						"localhost"
+					],
+					"port": "5007",
+					"path": [
+						"api",
+						"v1",
+						"employee",
+						"5cdbd781a05e1900128216a0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE specific employee",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:5007/api/v1/employee/5cdbd781a05e1900128216a0",
+					"host": [
+						"localhost"
+					],
+					"port": "5007",
+					"path": [
+						"api",
+						"v1",
+						"employee",
+						"5cdbd781a05e1900128216a0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST new employee",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"first_name\": \"Peter\",\n\t\"last_name\": \"De Vries\",\n\t\"dob\": \"1995-10-09\"\n}"
+				},
+				"url": {
+					"raw": "localhost:5007/api/v1/employee/",
+					"host": [
+						"localhost"
+					],
+					"port": "5007",
+					"path": [
+						"api",
+						"v1",
+						"employee",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
