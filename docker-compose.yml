@@ -5,11 +5,14 @@ services:
   # Main RabbitMQ container
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: saibot_rabbitmq
     ports:
       - '5672:5672'
       - '15672:15672'
-
-  #  PHPmyadmin container to connect to all mysql databases
+    volumes:
+      - rabbitmqdata:/data
+      
+   #  PHPmyadmin container to connect to all mysql databases
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
@@ -17,6 +20,37 @@ services:
     ports:
     - '8080:80'
 
+  flight_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: svenwstrl/saibot_flight_management
+    # Directory where the Dockerfile is located
+    build: ./flight_management
+    # Link local dir to dir in container
+    # Local: /flight_management
+    # Container: /usr/scr/app
+    volumes:
+      - ./flight_management:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
+    
+  airside_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: thimok22/airside_management:latest
+    # Directory where the Dockerfile is located
+    build: ./airside_management
+    depends_on:
+      - rabbitmq
+      - mongo_airside_management
+    ports:
+      - "5003:8181"
+    # Link local dir to dir in container
+    # Local: /flight_management
+    # Container: /usr/scr/app
+    volumes:
+      - ./airside_management:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
+    
   gate_management:
     # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
     image: svenwstrl/saibot_gate_management
@@ -39,7 +73,41 @@ services:
       MYSQL_HOST: mysql_gate_management
       MYSQL_PASS: saibot
       MYSQL_DB: saibot_gate_management
+    
+  employee_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: thimok22/employee_management:latest
+    # Directory where the Dockerfile is located
+    build: ./employee_management
+    depends_on:
+      - rabbitmq
+      - mongo_employee_management
+    ports:
+      - "5007:8183"
+    # Link local dir to dir in container
+    # Local: /flight_management
+    # Container: /usr/scr/app
+    volumes:
+      - ./employee_management:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
 
+  mongo_airside_management:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - 27019:27017
+      
+  mongo_employee_management:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - 27018:27017
+      
   mysql_gate_management:
     image: mysql:5.7
     environment:
@@ -48,6 +116,7 @@ services:
       - gate_mysql:/var/lib/mysql
     ports:
       - "3306:3306"
-
-volumes:
+      
+volumes:   
   gate_mysql:
+  rabbitmqdata:

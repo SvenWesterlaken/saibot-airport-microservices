@@ -1,0 +1,28 @@
+{
+  "name": "employee_management",
+  "version": "1.0.0",
+  "description": "Employee Management microservice for Saibot International Airport",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SvenWesterlaken/saibot-airport-microservices.git"
+  },
+  "author": "Thimo Koolen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SvenWesterlaken/saibot-airport-microservices/issues"
+  },
+  "homepage": "https://github.com/SvenWesterlaken/saibot-airport-microservices#readme",
+  "dependencies": {
+    "amqplib": "^0.5.3",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "mongoose": "^5.5.8",
+    "uuid": "^3.3.2"
+  }
+}
