@@ -31,7 +31,7 @@ services:
     build: ./airside_management
     depends_on:
       - rabbitmq
-      - mongodb
+      - mongodb_airside_management
     ports:
       - "5003:8181"
     # Link local dir to dir in container
@@ -41,14 +41,13 @@ services:
       - ./airside_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
-  mongodb:
+  mongodb_airside_management:
     image: mongo:latest
-    container_name: "mongodb"
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
     ports:
-      - 27017:27017
+      - 27019:27017
       
 volumes:   
   rabbitmqdata:
