@@ -31,26 +31,26 @@ const reconnect = function (){
 function restoreEvents() {
 	console.log("Restoring events...");
 	RmqFuel.find({})
-		.then((containers) => {
+		.then((objs) => {
 			// if any, create new connection
-			if (containers.length > 0) {
+			if (objs.length > 0) {
 				if (conn != null) {
 					console.log('Creating separate channel for restoration...');
 
 					// confirm channel to receive ack for deleting (temporary) saved events
 					conn.createConfirmChannel().then((ch) => {
-							containers.forEach((container) => {
-								ch.publish(exchange, 'fuel.create', Buffer.from(JSON.stringify(container)), {}, function(err, ok) {
-									if (err !== null) console.warn('Message nacked!');
-									else {
-										console.log("Successfully restored event");
-										RmqFuel.findOneAndDelete({_id: container._id})
-											.catch((error) => {
-												console.log(error);
-											})
-									}
-								});
+						objs.forEach((obj) => {
+							ch.publish(exchange, obj.key, Buffer.from(JSON.stringify(obj)), {}, function(err, ok) {
+								if (err !== null) console.warn('Message nacked!');
+								else {
+									console.log("Successfully restored event");
+									RmqFuel.findOneAndDelete({_id: obj._id})
+										.catch((error) => {
+											console.log(error);
+										})
+								}
 							});
+						});
 						ch.waitForConfirms().then(() => {
 							ch.close();
 							console.log("Restoring events completed! -- channel closed");
@@ -63,7 +63,7 @@ function restoreEvents() {
 			} else {
 				console.log("No events available to restore");
 			}
-	})
+		})
 		.catch((error) => {
 			console.log(error)
 		});

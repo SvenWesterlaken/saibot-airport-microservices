@@ -20,7 +20,8 @@ const RmqSchema = new Schema({
 	from: String,
 	type: String,
 	old_data: FuelSchema,
-	data: FuelSchema
+	data: FuelSchema,
+	key: String
 });
 
 const Fuel = mongoose.model('fuel', FuelSchema);
