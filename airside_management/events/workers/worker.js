@@ -1,6 +1,8 @@
 const amqpManager = require('../amqp.manager');
 
 module.exports.init = function (queueName, topicKey, callbackEvent) {
+	console.log('Init ' + queueName);
+	
 	if (amqpManager.channel != null){
 		return consume(amqpManager.channel, queueName, topicKey, callbackEvent)
 	}else {
