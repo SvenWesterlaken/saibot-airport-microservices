@@ -13,10 +13,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "localhost:5003/api/v1/runway",
 							"host": [
@@ -37,10 +33,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "localhost:5003/api/v1/runway/{{runway_id}}",
 							"host": [
@@ -101,10 +93,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "localhost:5003/api/v1/runway/{{runway_id}}",
 							"host": [
@@ -272,10 +260,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "localhost:5003/api/v1/taxiway/{{taxiway_id}}",
 							"host": [
@@ -341,10 +325,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "localhost:5003/api/v1/fuel/",
 							"host": [
@@ -373,10 +353,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "localhost:5003/api/v1/fuel/{{fueltank_id}}",
 							"host": [
@@ -426,7 +402,7 @@
 					"response": []
 				},
 				{
-					"name": "DELETE specific runway",
+					"name": "DELETE specific fuel tank",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -437,10 +413,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "localhost:5003/api/v1/fuel/{{fueltank_id}}",
 							"host": [
@@ -458,7 +430,7 @@
 					"response": []
 				},
 				{
-					"name": "POST new runway",
+					"name": "POST new fuel tank",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -516,19 +488,19 @@
 	],
 	"variable": [
 		{
-			"id": "dbf493fc-2558-4870-ad3d-bd1637f9681f",
+			"id": "3e21e16b-65ca-4e4e-8f32-43654591239d",
 			"key": "taxiway_id",
 			"value": "12345",
 			"type": "string"
 		},
 		{
-			"id": "bb50203b-e1f7-4489-ae9d-a4a12c3db6ef",
+			"id": "33a41277-06bd-474e-8bbe-9f540dc14793",
 			"key": "runway_id",
 			"value": "67890",
 			"type": "string"
 		},
 		{
-			"id": "0542fcbd-199f-4fd6-ba2d-6b18ed6bd746",
+			"id": "80e9568c-7901-441c-b7c8-0525bb742ee6",
 			"key": "fueltank_id",
 			"value": "10293",
 			"type": "string"
