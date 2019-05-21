@@ -65,7 +65,6 @@ class RedisWrapper:
             result = self.edis.zrevrangebyscore(name, max, min, withscores=True, score_cast_func=int)
 
         if len(result) > 0:
-            print('test')
             result = list(map(map_fun, result))
 
         return (result, logs)
