@@ -43,12 +43,11 @@ router.post('/', (req, res) => {
 			let channel = amqpManager.channel;
 				try {
 					amqpManager.sendMessageToQueue(channel, 'fuel.create', JSON.stringify(payload));
-				} catch (ex) {
-					console.log(ex);
+				} catch (err) {
 					const rmqPayload = new RmqFuel(payload);
 
 						rmqPayload.save().then((c) => {
-							console.log("Fuel created, but unable to connect to RabbitMQ")})
+							console.log("Fuel created, but unable to publish event")})
 				}
 
 			res.status(201).json(payload);

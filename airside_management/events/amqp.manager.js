@@ -75,6 +75,7 @@ function createChannel() {
 			console.log("Using existing channel...");
 			return channel;
 		} else {
+			module.exports.channel = null;
 			conn.createChannel().then((ch) => {
 				console.log("Creating new channel...");
 				module.exports.channel = ch;
