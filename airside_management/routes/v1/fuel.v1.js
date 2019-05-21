@@ -39,14 +39,16 @@ router.post('/', (req, res) => {
 				type: 'CREATE',
 				data: container
 			};
-			
+
 			let channel = amqpManager.channel;
+			const key = 'fuel.create';
 				try {
-					amqpManager.sendMessageToQueue(channel, 'fuel.create', JSON.stringify(payload));
+					amqpManager.sendMessageToQueue(channel, key, JSON.stringify(payload));
 				} catch (err) {
 					const rmqPayload = new RmqFuel(payload);
+					rmqPayload.key = key;
 
-						rmqPayload.save().then((c) => {
+						rmqPayload.save().then(() => {
 							console.log("Fuel created, but unable to publish event")})
 				}
 
@@ -84,18 +86,18 @@ router.patch('/:id', (req, res) => {
 							fuel_capacity: oldCapacity
 						}
 					};
-					
-					amqpManager.connectRmq()
-						.then((channel) => {
-							amqpManager.sendMessageToQueue(channel, 'fuel.update', JSON.stringify(payload));
-							res.status(201).json(payload);
-						})
-						.catch((error) => {
-							res.status(400).json({
-								message: 'Unable to patch fuel tank.',
-								error: error
-							});
-						});
+
+					let channel = amqpManager.channel;
+					const key = 'fuel.update';
+					try {
+						amqpManager.sendMessageToQueue(channel, key, JSON.stringify(payload));
+					} catch (err) {
+						const rmqPayload = new RmqFuel(payload);
+						rmqPayload.key = key;
+						rmqPayload.save().then(() => {
+							console.log("Fuel patched, but unable to publish event")})
+					}
+					res.status(201).json(payload);
 				})
 				.catch((error) => res.status(400).json(error));
 		})
@@ -115,18 +117,18 @@ router.delete('/:id', (req, res) => {
 				data: {},
 				old_data: container
 			};
-			
-			amqpManager.connectRmq()
-				.then((channel) => {
-					amqpManager.sendMessageToQueue(channel, 'fuel.delete', JSON.stringify(payload));
-					res.status(201).json(payload);
-				})
-				.catch((error) => {
-					res.status(400).json({
-						message: 'Unable to delete fuel tank.',
-						error: error
-					});
-				});
+
+			let channel = amqpManager.channel;
+			const key = 'fuel.delete';
+			try {
+				amqpManager.sendMessageToQueue(channel, key, JSON.stringify(payload));
+			} catch (err) {
+				const rmqPayload = new RmqFuel(payload);
+				rmqPayload.key = key;
+				rmqPayload.save().then(() => {
+					console.log("Fuel deleted, but unable to publish event")})
+			}
+			res.status(201).json(payload);
 		})
 		.catch((error) => res.status(400).json(error));
 });
