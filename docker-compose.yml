@@ -5,6 +5,7 @@ services:
   # Main RabbitMQ container
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: saibot_rabbitmq
     ports:
       - '5672:5672'
       - '15672:15672'
@@ -21,3 +22,27 @@ services:
       - ./flight_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
+  employee_management:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: thimok22/employee_management:latest
+    # Directory where the Dockerfile is located
+    build: ./employee_management
+    depends_on:
+      - rabbitmq
+      - mongo_employee_management
+    ports:
+      - "5007:8183"
+    # Link local dir to dir in container
+    # Local: /flight_management
+    # Container: /usr/scr/app
+    volumes:
+      - ./employee_management:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
+  mongo_employee_management:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - 27018:27017
