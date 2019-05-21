@@ -44,7 +44,7 @@ router.post('/', (req, res) => {
 			
 			amqpManager.connectRmq()
 				.then((channel) => {
-					amqpManager.sendMessageToQueue(channel, 'airside-taxiway', JSON.stringify(payload));
+					amqpManager.sendMessageToQueue(channel, 'taxiway.create', JSON.stringify(payload));
 					res.status(201).json(payload);
 				})
 				.catch((error) => {
@@ -94,7 +94,7 @@ router.patch('/:id', (req, res) => {
 					
 					amqpManager.connectRmq()
 						.then((channel) => {
-							amqpManager.sendMessageToQueue(channel, 'airside-taxiway', JSON.stringify(payload));
+							amqpManager.sendMessageToQueue(channel, 'taxiway.update', JSON.stringify(payload));
 							res.status(201).json(payload);
 						})
 						.catch((error) => {
@@ -125,7 +125,7 @@ router.delete('/:id', (req, res) => {
 			
 			amqpManager.connectRmq()
 				.then((channel) => {
-					amqpManager.sendMessageToQueue(channel, 'airside-taxiway', JSON.stringify(payload));
+					amqpManager.sendMessageToQueue(channel, 'taxiway.delete', JSON.stringify(payload));
 					res.status(201).json(payload);
 				})
 				.catch((error) => {

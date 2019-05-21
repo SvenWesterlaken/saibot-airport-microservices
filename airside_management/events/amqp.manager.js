@@ -135,11 +135,24 @@ module.exports = {
 		}).then(() => {
 			//Exchange OK
 			channel.publish(exchange, key, Buffer.from(message), {deliveryMode: 2});
+
 			console.log(" [x] Sent %s", message);
 		}).catch((error) => {
 			console.log('QUEUE ERROR PRODUCER');
 		});
+		//
+		// channel.assertQueue(queueName, {
+		// 	durable: true
+		// }).then(() => {
+		// 	//Queue OK
+		// 	channel.sendToQueue(queueName, Buffer.from(message), {deliveryMode: 2});
+		//
+		// 	console.log(" [x] Sent %s", message);
+		// }).catch((error) => {
+		// 	console.log('QUEUE ERROR PRODUCER');
+		// });
 	},
+	
 	consumeFromQueue(channel, queueName, key, callback) {
 		channel.assertExchange(exchange, 'topic', {
 			durable: true
@@ -151,6 +164,7 @@ module.exports = {
 			channel.prefetch(1);
 			//Queue OK
 			channel.bindQueue(queue.queue, exchange, key);
+
 			console.log('Worker for queue ' + queueName + ' started! Listening for messages...');
 
 			channel.consume(queue.queue, function(message) {

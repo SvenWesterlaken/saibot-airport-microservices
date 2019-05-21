@@ -45,7 +45,7 @@ router.post('/', (req, res) => {
 			//Send message
 			amqpManager.connectRmq()
 				.then((channel) => {
-					amqpManager.sendMessageToQueue(channel, 'airside-runway', JSON.stringify(payload));
+					amqpManager.sendMessageToQueue(channel, 'runway.create', JSON.stringify(payload));
 					res.status(201).json(payload);
 				})
 				.catch((error) => {
@@ -100,7 +100,7 @@ router.patch('/:id', (req, res) => {
 					
 					amqpManager.connectRmq()
 						.then((channel) => {
-							amqpManager.sendMessageToQueue(channel, 'airside-runway', JSON.stringify(payload));
+							amqpManager.sendMessageToQueue(channel, 'runway.update', JSON.stringify(payload));
 							res.status(200).json(payload);
 						})
 						.catch((error) => {
@@ -131,7 +131,7 @@ router.delete('/:id', (req, res) => {
 			
 			amqpManager.connectRmq()
 				.then((channel) => {
-					amqpManager.sendMessageToQueue(channel, 'airside-runway', JSON.stringify(payload));
+					amqpManager.sendMessageToQueue(channel, 'runway.delete', JSON.stringify(payload));
 					res.status(200).json(payload);
 				})
 				.catch((error) => {
