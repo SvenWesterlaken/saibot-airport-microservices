@@ -1,5 +1,5 @@
 import json, arrow, uuid
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from mongo import CheckInCounter, Flight, Gate, Passenger
 from rabbitmq import rabbitmq_publisher as rp
 from rabbitmq import create_queue_msg
@@ -29,7 +29,7 @@ def get_flight(id):
     """
     flight = Flight.objects.get(id=id)
 
-    return json.dumps(flight.to_parsable()), 200, {'Content-Type': 'application/json'}
+    return jsonify(flight.to_parsable())
 
 @bp.route('', methods=['GET'])
 def get_all():
@@ -45,7 +45,7 @@ def get_all():
                     $ref: "#/definitions/Flight"
     """
     flights = [f.to_parsable() for f in Flight.objects]
-    return json.dumps(flights), 200, {'Content-Type': 'application/json'}
+    return jsonify(flights)
 
 @bp.route('/count', methods=['GET'])
 def get_count():
@@ -61,7 +61,7 @@ def get_count():
                         type: integer
                         example: 30
     """
-    return json.dumps({'count': Flight.objects.count()}), 200, {'Content-Type': 'application/json'}
+    return jsonify({'count': Flight.objects.count()})
 
 @bp.route('/schedule/<type>', methods=['GET'])
 def getSchedule(type):
@@ -120,7 +120,7 @@ def getSchedule(type):
 
     flights = [f.to_parsable() for f in Flight.objects(time__gte=start_date.datetime, time__lte=end_date.datetime, type=type)]
 
-    return json.dumps({'start': start_date.format('YYYY-MM-DD'), 'end': end_date.format('YYYY-MM-DD'), 'flights': flights}), 200, {'Content-Type': 'application/json'}
+    return jsonify({'start': start_date.format('YYYY-MM-DD'), 'end': end_date.format('YYYY-MM-DD'), 'flights': flights})
 
 @bp.route('/request', methods=['POST'])
 def requestFreeGate():
@@ -189,13 +189,13 @@ def requestFreeGate():
         queue_msg = create_queue_msg('CREATE', 'New flight has been added successfully.', flight_dict)
         rp.publish_msg(rk='flight.create', msg=json.dumps(queue_msg))
 
-        return json.dumps(flight_dict), 200, {'Content-Type': 'application/json'}
+        return jsonify(flight_dict)
     else:
 
         queue_msg = create_queue_msg('CREATE', 'New flight was requested, but no free spots were available at the given time.', old_data=Flight(**flight).to_parsable())
         rp.publish_msg(rk='flight.create', msg=json.dumps(queue_msg))
 
-        return json.dumps({'msg': 'Sorry no free spots available around this time'}), 400, {'Content-Type': 'application/json'}
+        return jsonify({'msg': 'Sorry no free spots available around this time'}), 400, {'Content-Type': 'application/json'}
 
 @bp.route('/<id>/set_counter_gate', methods=['POST'])
 def set_counter_and_gate(id):
@@ -235,7 +235,7 @@ def set_counter_and_gate(id):
     flight.update_props({'check_in_counter': counter, 'gate': gate})
     flight.save()
 
-    return json.dumps(flight.to_parsable()), 200, {'Content-Type': 'application/json'}
+    return jsonify(flight.to_parsable())
 
 @bp.route('/<id>/cancel', methods=['POST'])
 def cancel_flight(id):
@@ -260,7 +260,7 @@ def cancel_flight(id):
     flight = Flight.objects.get(id=id)
     flight.cancel()
 
-    return json.dumps(flight.to_parsable()), 200, {'Content-Type': 'application/json'}
+    return jsonify(flight.to_parsable())
 
 @bp.route('/<id>/add_passenger', methods=['POST'])
 def add_passenger(id):
@@ -299,4 +299,4 @@ def add_passenger(id):
 
     flight.save()
 
-    return json.dumps(flight.to_parsable()), 200, {'Content-Type': 'application/json'}
+    return jsonify(flight.to_parsable())

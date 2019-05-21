@@ -1,6 +1,5 @@
 import pika, functools, time, threading, uuid
 from retrying import retry
-from . import msg_handler
 
 def create_queue_msg(type, message, data={}, old_data={}):
     return {
@@ -62,9 +61,6 @@ class RabbitMQPublisher:
         except pika.exceptions.StreamLostError:
             self.reconnect()
             self.__publish_message(rk, msg)
-
-
-
 
 class RabbitMQConsumer:
     """
