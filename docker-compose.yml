@@ -21,56 +21,52 @@ services:
     - '8080:80'
 
   flight_management:
-    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
     image: svenwstrl/saibot_flight_management
-    # Directory where the Dockerfile is located
     build: ./flight_management
-    # Link local dir to dir in container
-    # Local:      /flight_management
-    # Container:  /usr/scr/app
     volumes:
       - ./flight_management:/usr/src/app
-    # Show colored logs when starting with docker-compose up
     tty: true
-    # Connect inner port 5000 to outer port 5001 (container can be accessed by localhost:5001 this way)
     ports:
       - '5001:5000'
-    # Set environment variables
     environment:
       FLASK_APP: flaskr
       FLASK_ENV: development
       MONGO_HOST: mongo_flight_management
       MONGO_DB: saibot_flight_management
 
+   check_in_counter_management:
+    image: svenwstrl/saibot_check_in_counter_management
+    build: ./check_in_counter_management
+    volumes:
+      - ./check_in_counter_management:/usr/src/app
+    tty: true
+    ports:
+      - '5005:5000'
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
+      MYSQL_HOST: mysql_check_in_counter_management
+      MYSQL_PASS: saibot
+      MYSQL_DB: saibot_check_in_counter_management
+
   airside_management:
-    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
     image: thimok22/airside_management:latest
-    # Directory where the Dockerfile is located
     build: ./airside_management
     depends_on:
       - rabbitmq
       - mongo_airside_management
     ports:
       - "5003:8181"
-    # Show colored logs when starting with docker-compose up
     tty: true
 
   gate_management:
-    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
     image: svenwstrl/saibot_gate_management
-    # Directory where the Dockerfile is located
     build: ./gate_management
-    # Link local dir to dir in container
-    # Local:      /gate_management
-    # Container:  /usr/scr/app
     volumes:
       - ./gate_management:/usr/src/app
-    # Show colored logs when starting with docker-compose up
     tty: true
-    # Connect inner port 5000 to outer port 5004 (container can be accessed by localhost:5004 this way)
     ports:
       - '5004:5000'
-    # Set environment variables
     environment:
       FLASK_APP: flaskr
       FLASK_ENV: development
@@ -79,21 +75,13 @@ services:
       MYSQL_DB: saibot_gate_management
 
   airplane_management:
-    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
     image: twanvm92/saibot_airplane_management
-    # Directory where the Dockerfile is located
     build: ./airplane_management
-    # Link local dir to dir in container
-    # Local:      /flight_management
-    # Container:  /usr/scr/app
     volumes:
     - ./airplane_management:/usr/src/app
-    # Show colored logs when starting with docker-compose up
     tty: true
-    # Connect inner port 5000 to outer port 5002 (container can be accessed by localhost:5002 this way)
     ports:
     - '5002:5000'
-    # Set environment variables
     environment:
       FLASK_APP: main.py
       FLASK_ENV: development
@@ -102,25 +90,14 @@ services:
       MYSQL_DB: saibot_airplane_management
 
   employee_management:
-    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
     image: thimok22/employee_management:latest
-    # Directory where the Dockerfile is located
     build: ./employee_management
     depends_on:
       - rabbitmq
       - mongo_employee_management
     ports:
       - "5007:8183"
-    # Show colored logs when starting with docker-compose up
     tty: true
-
-  mongo_flight_management:
-    image: mongo
-    restart: always
-    volumes:
-      - saibot_flight_mongo:/data/db
-    ports:
-      - "27017:27017"
 
   security_management:
     image: svenwstrl/saibot_security_management
@@ -136,30 +113,36 @@ services:
       REDIS_HOST: redis_security_management
       REDIS_PORT: 6379
 
+  mongo_flight_management:
+    image: mongo
+    restart: always
+    volumes:
+      - saibot_flight_mongo:/data/db
+    ports:
+      - "27017:27017"
+
   redis_security_management:
     image: redis
     restart: always
     volumes:
       - saibot_security_redis/data
     ports:
-      - 6379:6379
+      - "6379:6379"
     command: redis-server --appendonly yes
 
   mongo_airside_management:
     image: mongo:latest
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - saibot_airside_mongo:/data/db
     ports:
-      - 27019:27017
+      - "27019:27017"
 
   mongo_employee_management:
     image: mongo:latest
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - saibot_employee_mongo:/data/db
     ports:
-      - 27018:27017
+      - "27018:27017"
 
   mysql_gate_management:
     image: mysql:5.7
@@ -179,9 +162,21 @@ services:
     ports:
     - "3307:3306"
 
+  mysql_check_in_counter_management:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: saibot
+    volumes:
+      - check_in_counter_mysql:/var/lib/mysql
+    ports:
+      - "3309:3306"
+
 volumes:
+  check_in_counter_mysql:
   gate_mysql:
   airplane_mysql:
   rabbitmqdata:
   saibot_flight_mongo:
+  saibot_employee_mongo:
+  saibot_airside_mongo:
   saibot_security_redis:
