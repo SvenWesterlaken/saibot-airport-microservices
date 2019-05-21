@@ -18,11 +18,11 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:5004/api/v1/employee/5cdbd781a05e1900128216a0",
+					"raw": "localhost:5007/api/v1/employee/5cdbd781a05e1900128216a0",
 					"host": [
 						"localhost"
 					],
-					"port": "5004",
+					"port": "5007",
 					"path": [
 						"api",
 						"v1",
@@ -46,11 +46,11 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:5004/api/v1/employee/",
+					"raw": "localhost:5007/api/v1/employee/",
 					"host": [
 						"localhost"
 					],
-					"port": "5004",
+					"port": "5007",
 					"path": [
 						"api",
 						"v1",
@@ -78,11 +78,11 @@
 					"raw": "{\n\t\"first_name\": \"Peter\",\n\t\"last_name\": \"De Vries\",\n\t\"dob\": \"1995-10-09\"\n}"
 				},
 				"url": {
-					"raw": "localhost:5004/api/v1/employee/5cdbd75fa05e19001282169f",
+					"raw": "localhost:5007/api/v1/employee/5cdbd75fa05e19001282169f",
 					"host": [
 						"localhost"
 					],
-					"port": "5004",
+					"port": "5007",
 					"path": [
 						"api",
 						"v1",
@@ -96,7 +96,7 @@
 		{
 			"name": "DELETE specific employee",
 			"request": {
-				"method": "DELETE",
+				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
@@ -105,21 +105,17 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"first_name\": \"Peter\",\n\t\"last_name\": \"De Vries\",\n\t\"dob\": \"1995-10-09\"\n}"
-				},
 				"url": {
-					"raw": "localhost:5004/api/v1/employee/5cdbd75fa05e19001282169f",
+					"raw": "localhost:5007/api/v1/employee/",
 					"host": [
 						"localhost"
 					],
-					"port": "5004",
+					"port": "5007",
 					"path": [
 						"api",
 						"v1",
 						"employee",
-						"5cdbd75fa05e19001282169f"
+						""
 					]
 				}
 			},
@@ -142,11 +138,11 @@
 					"raw": "{\n\t\"first_name\": \"Peter\",\n\t\"last_name\": \"De Vries\",\n\t\"dob\": \"1995-10-09\"\n}"
 				},
 				"url": {
-					"raw": "localhost:5004/api/v1/employee/",
+					"raw": "localhost:5007/api/v1/employee/",
 					"host": [
 						"localhost"
 					],
-					"port": "5004",
+					"port": "5007",
 					"path": [
 						"api",
 						"v1",
