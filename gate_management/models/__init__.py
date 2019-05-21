@@ -2,7 +2,9 @@ import string, arrow
 from random import randint, choice
 from pony.orm import db_session
 from .base import db
-from .gate import Gate
+from .gate import *
+
+schemas = [('Gate', gate_schema)]
 
 @db_session
 def populate_db():

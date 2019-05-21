@@ -4,18 +4,48 @@ from models import Gate
 from pony.orm import *
 from rabbitmq import msg_handler
 
-bp = Blueprint('gate', __name__, url_prefix='/gate')
+bp = Blueprint('gate', __name__, url_prefix = '/gate')
 
-@bp.route('', methods=['GET'])
+@bp.route('', methods = ['GET'])
 @db_session
 def get_all():
+    """
+    Get all gates
+    ---
+    responses:
+        200:
+            description: Gates found
+            schema:
+                type: array
+                items:
+                    $ref: "#/definitions/Gate"
+    """
     gates = [gate.to_dict() for gate in Gate.select()]
 
     return json.dumps(gates)
 
-@bp.route('/<id>', methods=['GET'])
+@bp.route('/<id>', methods = ['GET'])
 @db_session
 def get(id):
+    """
+    Get single gate by id
+    ---
+    parameters:
+        -   in: path
+            name: id
+            required: true
+            schema:
+                type: number
+                example: 1
+            description: ID of the gate
+    responses:
+        200:
+            description: Found a gate
+            schema:
+                $ref: "#/definitions/Gate"
+        400:
+            description: The given gate id is invalid
+    """
     # Check if input is a number
     try:
         int(id)
@@ -34,9 +64,33 @@ def get(id):
 
     return json.dumps(gate.to_dict())
 
-@bp.route('', methods=['POST'])
+@bp.route('', methods = ['POST'])
 @db_session
 def create():
+    """
+    Adds a gate to the system
+    ---
+    parameters:
+        -   in: body
+            name: gate
+            description: The gate to create
+            schema:
+                type: object
+                properties:
+                    terminal:
+                        type: string
+                        description: Terminal of the gate
+                        example: 'A'
+                    number:
+                        type: integer
+                        description: Number of the gate
+                        example: 1
+    responses:
+        200:
+            description: Created a new gate
+            schema:
+                $ref: "#/definitions/Gate"
+    """
     gate = json.loads(request.data.decode('UTF-8'))
 
     new_gate = Gate(**gate)
@@ -54,9 +108,43 @@ def create():
 
     return json.dumps(new_gate.to_dict())
 
-@bp.route('/<id>', methods=['PUT'])
+@bp.route('/<id>', methods = ['PUT'])
 @db_session
 def update(id):
+    """
+    Updates an existing gate in the system
+    ---
+    parameters:
+        -   in: path
+            name: id
+            required: true
+            schema:
+                type: number
+                example: 1
+            description: ID of the gate
+        -   in: body
+            name: gate
+            required: true
+            schema:
+                type: object
+                properties:
+                    terminal:
+                        type: string
+                        description: Terminal of the gate
+                        example: 'A'
+                    number:
+                        type: integer
+                        description: Number of the gate
+                        example: 1
+            description: The attributes of the gate to update
+    responses:
+        200:
+            description: Updated the gate
+            schema:
+                $ref: "#/definitions/Gate"
+        400:
+            description: The given gate id is invalid
+    """
     # Check if input is a number
     try:
         int(id)
@@ -89,9 +177,28 @@ def update(id):
 
     return json.dumps(gate.to_dict())
 
-@bp.route('/<id>', methods=['DELETE'])
+@bp.route('/<id>', methods = ['DELETE'])
 @db_session
 def delete(id):
+    """
+    Deletes an existing gate from the system
+    ---
+    parameters:
+        -   in: path
+            name: id
+            required: true
+            schema:
+                type: number
+                example: 1
+            description: ID of the gate
+    responses:
+        200:
+            description: Deleted the gate from the system
+            schema:
+                $ref: "#/definitions/Gate"
+        400:
+            description: The given gate id is invalid
+    """
     # Check if input is a number
     try:
         int(id)
@@ -112,8 +219,8 @@ def delete(id):
 
     payload = {
         'id': str(uuid.uuid4()),
-        'message': 'Check-in counter has been deleted successfully',
-        'from': 'check_in_counter_management',
+        'message': 'Gate has been deleted successfully',
+        'from': 'gate_management',
         'type': 'DELETE',
         'data': {},
         'old_data': gate_old
