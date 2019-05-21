@@ -38,7 +38,7 @@ router.post('/', (req, res) => {
 			
 			amqpManager.connectRmq()
 				.then((channel) => {
-					amqpManager.sendMessageToQueue(channel, 'employee-management', JSON.stringify(payload));
+					amqpManager.sendMessageToQueue(channel, 'employee.create', JSON.stringify(payload));
 					res.status(201).json(payload);
 				})
 				.catch((error) => {
@@ -88,7 +88,7 @@ router.patch('/:id', (req, res) => {
 					
 					amqpManager.connectRmq()
 						.then((channel) => {
-							amqpManager.sendMessageToQueue(channel, 'employee-management', JSON.stringify(payload));
+							amqpManager.sendMessageToQueue(channel, 'employee.update', JSON.stringify(payload));
 							res.status(201).json(payload);
 						})
 						.catch((error) => {
@@ -119,7 +119,7 @@ router.delete('/:id', (req, res) => {
 			
 			amqpManager.connectRmq()
 				.then((channel) => {
-					amqpManager.sendMessageToQueue(channel, 'employee-management', JSON.stringify(payload));
+					amqpManager.sendMessageToQueue(channel, 'employee.delete', JSON.stringify(payload));
 					res.status(201).json(payload);
 				})
 				.catch((error) => {
