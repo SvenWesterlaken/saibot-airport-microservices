@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cxf="http://camel.apache.org/schema/cxf"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/cxf
+       http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       http://cxf.apache.org/jaxrs
+       http://cxf.apache.org/schemas/jaxrs.xsd
+       http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+       http://camel.apache.org/schema/spring
+       http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd ">
+
+    <!-- this is the JDBC data source which uses an in-memory only Apache Derby database -->
+    <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"-->
+          <!--destroy-method="close">-->
+        <!--<property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver" />-->
+        <!--<property name="url" value="jdbc:derby:memory:orders;create=true" />-->
+        <!--<property name="username" value="" />-->
+        <!--<property name="password" value="" />-->
+    <!--</bean>-->
+
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <!--<property name="url" value="jdbc:mysql://localhost:3306/passenger_integration" />-->
+        <property name="url" value="jdbc:mysql://mysql_passenger_integration:3306/passenger_integration" />
+        <property name="username" value="root" />
+        <property name="password" value="saibot" />
+    </bean>
+    <jdbc:initialize-database data-source="dataSource" enabled="true">
+        <jdbc:script location="classpath:db-schema.sql" />
+    </jdbc:initialize-database>
+
+    <!-- configure the Camel SQL component to use the JDBC data source -->
+    <bean id="sqlComponent" class="org.apache.camel.component.sql.SqlComponent">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="passengerMapper" class="db.utils.PassengerMapper" />
+
+    <bean id="passngerRouter" class="saibot.MyRouteBuilder" />
+
+    <camelContext id="passengerCtx" xmlns="http://camel.apache.org/schema/spring">
+
+        <!-- use Camel property placeholder loaded from the given file -->
+        <propertyPlaceholder id="placeholder" location="classpath:sql.properties" />
+
+        <!--<routeBuilder ref="passengerRouter" />-->
+
+    </camelContext>
+
+</beans>
