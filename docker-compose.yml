@@ -2,12 +2,12 @@ version: "3.7"
 
 services:
 
-  # Main RabbitMQ container
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - '5672:5672'
-      - '15672:15672'
+#  # Main RabbitMQ container
+#  rabbitmq:
+#    image: rabbitmq:3-management
+#    ports:
+#      - '5672:5672'
+#      - '15672:15672'
 
   flight_management:
     # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
@@ -21,3 +21,34 @@ services:
       - ./flight_management:/usr/src/app
     # Show colored logs when starting with docker-compose up
     tty: true
+
+  passenger_integration:
+    # Name of image (needs to have a prefix of docker hub ID ie. svenwstrl)
+    image: twanvm92/saibot_passenger_integration
+    # Directory where the Dockerfile is located
+    build: ./passenger_integration
+    # Link local dir to dir in container
+    # Local:      /passenger_integration
+    # Container:  /usr/scr/app
+    volumes:
+      - ./passenger_integration:/usr/src/app
+    # Show colored logs when starting with docker-compose up
+    tty: true
+    # Connect inner port 5006 to outer port 5002 (container can be accessed by localhost:5002 this way)
+    ports:
+      - '5006:5000'
+    # Set environment variables
+    environment:
+      FLASK_APP: main.py
+      FLASK_ENV: development
+
+  mysql_passenger_integration:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: saibot
+    volumes:
+      - passenger_integration_mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+volumes:
+  passenger_integration_mysql:
