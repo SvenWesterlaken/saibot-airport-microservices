@@ -211,7 +211,7 @@ def set_counter_and_gate(id):
                 properties:
                     gate:
                         $ref: '#/definitions/Gate'
-                    check_in_counter:
+                    counter:
                         $ref: '#/definitions/CheckInCounter'
         -   in: path
             name: id
@@ -232,10 +232,18 @@ def set_counter_and_gate(id):
     gate = Gate(**data['gate'])
 
     flight = Flight.objects.get(id=id)
+    old_flight_data = flight.to_parsable()
+
     flight.update_props({'check_in_counter': counter, 'gate': gate})
     flight.save()
 
-    return jsonify(flight.to_parsable())
+    new_flight_data = flight.to_parsable()
+    nr = new_flight_data['nr']
+
+    queue_msg = create_queue_msg('CREATE', f'Gate {gate.terminal}{gate.nr} & check-in counter {counter.nr} were assigned to flight {nr}', data=new_flight_data, old_data=old_flight_data)
+    rp.publish_msg(rk='flight.update', msg=json.dumps(queue_msg))
+
+    return jsonify(new_flight_data)
 
 @bp.route('/<id>/cancel', methods=['POST'])
 def cancel_flight(id):
@@ -258,9 +266,17 @@ def cancel_flight(id):
                 $ref: '#/definitions/Flight'
     """
     flight = Flight.objects.get(id=id)
+    old_flight_data = flight.to_parsable()
+
     flight.cancel()
 
-    return jsonify(flight.to_parsable())
+    new_flight_data = flight.to_parsable()
+    nr = new_flight_data['nr']
+
+    queue_msg = create_queue_msg('UPDATE', f'Flight {nr} is cancelled', data=new_flight_data, old_data=old_flight_data)
+    rp.publish_msg(rk='flight.update', msg=json.dumps(queue_msg))
+
+    return jsonify(new_flight_data)
 
 @bp.route('/<id>/add_passenger', methods=['POST'])
 def add_passenger(id):
@@ -288,15 +304,26 @@ def add_passenger(id):
                 $ref: '#/definitions/Flight'
     """
     flight = Flight.objects.get(id=id)
+    old_flight_data = flight.to_parsable()
 
     passengers = json.loads(request.data.decode('UTF-8'))
 
+
+
     if isinstance(passengers, dict):
         passengers = [passengers]
+
+    passenger_str = 'A passenger was' if len(passengers) == 1 else str(len(passengers)) + ' passengers were'
 
     for p in passengers:
         flight.passengers.append(Passenger(**p))
 
     flight.save()
+
+    new_flight_data = flight.to_parsable()
+    nr = new_flight_data['nr']
+
+    queue_msg = create_queue_msg('UPDATE', f'{passenger_str} added to Flight {nr}', data=new_flight_data, old_data=old_flight_data)
+    rp.publish_msg(rk='flight.update', msg=json.dumps(queue_msg))
 
     return jsonify(flight.to_parsable())
