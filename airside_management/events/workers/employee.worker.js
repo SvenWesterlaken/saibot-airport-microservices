@@ -20,11 +20,28 @@ module.exports.messageReceivedEvent = (message) => {
 			break;
 			
 		case 'UPDATE':
-			//TODO UPDATE
+			Employee.findOne({_id: data._id})
+				.then((employee) => {
+					if (data.first_name)
+						employee.first_name = data.first_name;
+					
+					if (data.last_name)
+						employee.last_name = data.last_name;
+					
+					employee.save()
+						.then((updatedEmployee) => {
+							console.log('Employee updated successfully:');
+							console.log(updatedEmployee);
+						}).catch((error) => console.log('Error: ' + error));
+				}).catch((error) => console.log('Error: ' + error));
 			break;
 			
 		case 'DELETE':
-			//TODO DELETE
+			Employee.findOneAndDelete({_id: data._id})
+				.then((employee) => {
+					console.log('Employee deleted successfully:');
+					console.log(employee);
+				}).catch((error) => console.log('Error: ' + error));
 			break;
 	}
-}
+};
