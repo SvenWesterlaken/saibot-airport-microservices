@@ -1,8 +1,11 @@
 version: "3.7"
 
 services:
-
-  # Main RabbitMQ container
+# ------------------------------------------------------------------------------------------------
+#
+# Shared containers
+#
+# ------------------------------------------------------------------------------------------------
   rabbitmq:
     image: rabbitmq:3-management
     container_name: saibot_rabbitmq
@@ -12,17 +15,24 @@ services:
     volumes:
       - rabbitmqdata:/data
 
-   #  PHPmyadmin container to connect to all mysql databases
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: saibot_phpmyadmin
     environment:
       PMA_ARBITRARY: 1
     ports:
     - '8080:80'
 
+# ------------------------------------------------------------------------------------------------
+#
+# Microservice containers
+#
+# ------------------------------------------------------------------------------------------------
+
   flight_management:
     image: svenwstrl/saibot_flight_management
     build: ./flight_management
+    container_name: saibot_flight_management
     volumes:
       - ./flight_management:/usr/src/app
     tty: true
@@ -34,9 +44,10 @@ services:
       MONGO_HOST: mongo_flight_management
       MONGO_DB: saibot_flight_management
 
-   check_in_counter_management:
+  check_in_counter_management:
     image: svenwstrl/saibot_check_in_counter_management
     build: ./check_in_counter_management
+    container_name: saibot_cic_management
     volumes:
       - ./check_in_counter_management:/usr/src/app
     tty: true
@@ -51,6 +62,7 @@ services:
 
   airside_management:
     image: thimok22/airside_management:latest
+    container_name: saibot_airside_management
     build: ./airside_management
     depends_on:
       - rabbitmq
@@ -62,6 +74,7 @@ services:
   gate_management:
     image: svenwstrl/saibot_gate_management
     build: ./gate_management
+    container_name: saibot_gate_management
     volumes:
       - ./gate_management:/usr/src/app
     tty: true
@@ -77,6 +90,7 @@ services:
   airplane_management:
     image: twanvm92/saibot_airplane_management
     build: ./airplane_management
+    container_name: saibot_airplane_management
     volumes:
     - ./airplane_management:/usr/src/app
     tty: true
@@ -92,6 +106,7 @@ services:
   employee_management:
     image: thimok22/employee_management:latest
     build: ./employee_management
+    container_name: saibot_employee_management
     depends_on:
       - rabbitmq
       - mongo_employee_management
@@ -102,6 +117,7 @@ services:
   security_management:
     image: svenwstrl/saibot_security_management
     build: ./security_management
+    container_name: saibot_security_management
     volumes:
       - ./security_management:/usr/src/app
     tty: true
@@ -113,25 +129,34 @@ services:
       REDIS_HOST: redis_security_management
       REDIS_PORT: 6379
 
+# ------------------------------------------------------------------------------------------------
+#
+# Database containers
+#
+# ------------------------------------------------------------------------------------------------
+
+  redis_security_management:
+    image: redis
+    restart: always
+    container_name: saibot_security_redis
+    volumes:
+      - saibot_security_redis:/data
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+
   mongo_flight_management:
     image: mongo
+    container_name: saibot_flight_mongo
     restart: always
     volumes:
       - saibot_flight_mongo:/data/db
     ports:
       - "27017:27017"
 
-  redis_security_management:
-    image: redis
-    restart: always
-    volumes:
-      - saibot_security_redis/data
-    ports:
-      - "6379:6379"
-    command: redis-server --appendonly yes
-
   mongo_airside_management:
     image: mongo:latest
+    container_name: saibot_airside_mongo
     volumes:
       - saibot_airside_mongo:/data/db
     ports:
@@ -139,6 +164,7 @@ services:
 
   mongo_employee_management:
     image: mongo:latest
+    container_name: saibot_employee_mongo
     volumes:
       - saibot_employee_mongo:/data/db
     ports:
@@ -146,8 +172,10 @@ services:
 
   mysql_gate_management:
     image: mysql:5.7
+    container_name: saibot_gate_mysql
     environment:
       MYSQL_ROOT_PASSWORD: saibot
+      MYSQL_DATABASE: saibot_gate_management
     volumes:
       - gate_mysql:/var/lib/mysql
     ports:
@@ -155,8 +183,10 @@ services:
 
   mysql_airplane_management:
     image: mysql:5.7
+    container_name: saibot_airplane_mysql
     environment:
       MYSQL_ROOT_PASSWORD: saibot
+      MYSQL_DATABASE: saibot_airplane_management
     volumes:
     - airplane_mysql:/var/lib/mysql
     ports:
@@ -164,12 +194,20 @@ services:
 
   mysql_check_in_counter_management:
     image: mysql:5.7
+    container_name: saibot_cic_mysql
     environment:
       MYSQL_ROOT_PASSWORD: saibot
+      MYSQL_DATABASE: saibot_check_in_counter_management
     volumes:
       - check_in_counter_mysql:/var/lib/mysql
     ports:
       - "3309:3306"
+
+# ------------------------------------------------------------------------------------------------
+#
+# Volumes
+#
+# ------------------------------------------------------------------------------------------------
 
 volumes:
   check_in_counter_mysql:
