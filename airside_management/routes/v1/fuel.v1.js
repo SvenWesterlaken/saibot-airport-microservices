@@ -42,7 +42,7 @@ router.post('/', (req, res) => {
 			
 			let channel = amqpManager.channel;
 				try {
-					amqpManager.sendMessageToQueue(channel, 'airside-fuel', JSON.stringify(payload));
+					amqpManager.sendMessageToQueue(channel, 'fuel.create', JSON.stringify(payload));
 				} catch (ex) {
 					console.log(ex);
 					const rmqPayload = new RmqFuel(payload);

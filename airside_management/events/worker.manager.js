@@ -18,16 +18,16 @@ module.exports.init = () => {
 };
 
 function fuelWorkerInit() {
-	return fuelWorker.init('airside-fuel', fuelWorkerCallback.messageReceivedEvent)
+	return fuelWorker.init('airside-fuel', 'fuel.#', fuelWorkerCallback.messageReceivedEvent)
 	console.log('Worker Fuel started.');
 }
 
 function runwayWorkerInit() {
-	return runwayWorker.init('airside-runway', runwayWorkerCallback.messageReceivedEvent)
+	return runwayWorker.init('airside-runway', 'runway.#', runwayWorkerCallback.messageReceivedEvent)
 	console.log('Worker Runway started.');
 }
 
 function taxiwayWorkerInit() {
-	return taxiwayWorker.init('airside-taxiway', taxiwayWorkerCallback.messageReceivedEvent)
+	return taxiwayWorker.init('airside-taxiway', 'taxiway.#', taxiwayWorkerCallback.messageReceivedEvent)
 	console.log('Worker Taxiway started.');
 }
