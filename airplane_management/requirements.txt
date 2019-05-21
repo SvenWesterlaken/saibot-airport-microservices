@@ -1,0 +1,19 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: win-64
+certifi
+click
+flask
+itsdangerous
+jinja2
+markupsafe
+python-dotenv
+vc
+werkzeug==0.14.1
+wheel
+wincertstore
+pony
+retrying
+pika
+pymysql
+flask_restplus
