@@ -47,5 +47,30 @@ services:
     ports:
       - "27017:27017"
 
+  security_management:
+    image: svenwstrl/saibot_security_management
+    build: ./security_management
+    volumes:
+      - ./security_management:/usr/src/app
+    tty: true
+    ports:
+      - '5008:5000'
+    environment:
+      FLASK_APP: flaskr
+      FLASK_ENV: development
+      REDIS_HOST: redis_security_management
+      REDIS_PORT: 6379
+
+  redis_security_management:
+    image: redis
+    restart: always
+    volumes:
+      - saibot_security_redis/data
+    ports:
+      - 6379:6379
+    command: redis-server --appendonly yes
+
+
 volumes:
   saibot_flight_mongo:
+  saibot_security_redis:
