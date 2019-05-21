@@ -71,7 +71,7 @@ services:
       MYSQL_DB: saibot_check_in_counter_management
 
   airside_management:
-    image: thimok22/airside_management:latest
+    image: svenwstrl/airside_management:latest
     container_name: saibot_airside_management
     build: ./airside_management
     depends_on:
@@ -98,7 +98,7 @@ services:
       MYSQL_DB: saibot_gate_management
 
   airplane_management:
-    image: twanvm92/saibot_airplane_management
+    image: svenwstrl/saibot_airplane_management
     build: ./airplane_management
     container_name: saibot_airplane_management
     volumes:
@@ -114,7 +114,7 @@ services:
       MYSQL_DB: saibot_airplane_management
 
   employee_management:
-    image: thimok22/employee_management:latest
+    image: svenwstrl/employee_management:latest
     build: ./employee_management
     container_name: saibot_employee_management
     depends_on:
