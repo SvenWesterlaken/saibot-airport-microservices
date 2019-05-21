@@ -6,7 +6,7 @@
 
 _Adds a new runway to the system_
 
-**Message sent in queue:** airside-runway
+**Message topic:** runway.create
 
 **Message content:**
 
@@ -30,7 +30,7 @@ _Adds a new runway to the system_
 
 _Updates an existing runway in the system_
 
-**Message sent in queue:** airside-runway
+**Message topic:** runway.update
 
 **Message content:**
 
@@ -59,7 +59,7 @@ _Updates an existing runway in the system_
 
 _Deletes an existing runway in the system_
 
-**Message sent in queue:** airside-runway
+**Message topic:** runway.delete
 
 **Message content:**
 
@@ -83,7 +83,7 @@ _Deletes an existing runway in the system_
 
 _Adds a new taxiway to the system_
 
-**Message sent in queue:** airside-taxiway
+**Message topic:** taxiway.create
 
 **Message content:**
 
@@ -106,7 +106,7 @@ _Adds a new taxiway to the system_
 
 _Updates an existing taxiway in the system_
 
-**Message sent in queue:** airside-taxiway
+**Message topic:** taxiway.update
 
 **Message content:**
 
@@ -133,7 +133,7 @@ _Updates an existing taxiway in the system_
 
 _Deletes an existing taxiway in the system_
 
-**Message sent in queue:** airside-taxiway
+**Message topic:** taxiway.delete
 
 **Message content:**
 
@@ -156,7 +156,7 @@ _Deletes an existing taxiway in the system_
 
 _Adds a new fuel tank to the system_
 
-**Message sent in queue:** airside-fuel
+**Message topic:** fuel.create
 
 **Message content:**
 
@@ -178,7 +178,7 @@ _Adds a new fuel tank to the system_
 
 _Updates an existing fuel tank in the system_
 
-**Message sent in queue:** airside-fuel
+**Message topic:** fuel.update
 
 **Message content:**
 
@@ -203,7 +203,7 @@ _Updates an existing fuel tank in the system_
 
 _Deletes an existing fuel tank in the system_
 
-**Message sent in queue:** airside-fuel
+**Message topic:** fuel.delete
 
 **Message content:**
 
