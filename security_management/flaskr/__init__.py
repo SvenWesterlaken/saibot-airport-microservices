@@ -1,6 +1,7 @@
 import os
 from flask import Flask, jsonify
-from . import events
+from . import events, swagger_ui
+from flask_swagger import swagger
 
 def create_app(test_config=None):
     # create and configure the app
@@ -28,6 +29,15 @@ def create_app(test_config=None):
     def hello():
         return 'Security says hi!'
 
-    app.register_blueprint(events.bp)
+    @app.route('/api/1/docs/swagger.json')
+    def spec():
+        swag = swagger(app)
+        swag['info']['version'] = "1.0.0"
+        swag['info']['title'] = "Saibot Security Management API (Events)"
+
+        return jsonify(swag)
+
+    app.register_blueprint(events.bp, url_prefix='/api/1'+events.bp.url_prefix)
+    app.register_blueprint(swagger_ui.bp, url_prefix=swagger_ui.url)
 
     return app
