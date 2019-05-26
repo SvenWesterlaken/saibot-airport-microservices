@@ -6,22 +6,21 @@ The whole application architecture can be started by using docker compose with t
 ```
 docker-compose up
 ```
-This will start all available microservices.
 
 ### Applications
 Once everything is started the following microservices should be available:
 
 #### Airport Microservices
 
-| Microservice                    | Url                     | Endpoint documentation            |
-| ------------------------------- | ----------------------- | ----------------------            |
-| **Flight Management**           | http://localhost:5001/  | http://localhost:5001/api/1/docs  |
-| **Airplane Management**         | http://localhost:5002/  | http://localhost:5002/api/1/docs  |
-| **Airside Management**          | http://localhost:5003/  | Postman scripts                   |
-| **Gate Management**             | http://localhost:5004/  | http://localhost:5004/api/1/docs  |
-| **Check-in Counter Management** | http://localhost:5005/  | http://localhost:5004/api/1/docs  |
-| **Employee Management**         | http://localhost:5007/  | Postman scripts                   |
-| **Security Management**         | http://localhost:5008/  | http://localhost:5008/api/1/docs  |
+| Microservice                    | Url                     | Endpoint documentation                                                    |
+| ------------------------------- | ----------------------- | ------------------------------------------------------------------------- |
+| **Flight Management**           | http://localhost:5001/  | http://localhost:5001/api/1/docs                                          |
+| **Airplane Management**         | http://localhost:5002/  | http://localhost:5002/api/1/docs                                          |
+| **Airside Management**          | http://localhost:5003/  | [Postman scripts](/_docs/postman/airside_management.postman_collection)   |
+| **Gate Management**             | http://localhost:5004/  | http://localhost:5004/api/1/docs                                          |
+| **Check-in Counter Management** | http://localhost:5005/  | http://localhost:5005/api/1/docs                                          |
+| **Employee Management**         | http://localhost:5007/  | [Postman scripts](/_docs/postman/employee_management.postman_collection)  |
+| **Security Management**         | http://localhost:5008/  | http://localhost:5008/api/1/docs                                          |
 
 #### Management/Development Microservices
 
@@ -85,3 +84,11 @@ refueled.
 ### Context Map:
 
 ![Context Map](/_docs/context_diagram/context_map.png)
+
+### Enterprise Architecture Diagrams:
+
+#### Financial Department
+![Finincial Department](/_docs/enterprise_architecture_diagram/Airport_Financial_department.jpg)
+
+#### Flight Scheduling
+![Flight Scheduling](/_docs/enterprise_architecture_diagram/Flight_schedule.jpg)
